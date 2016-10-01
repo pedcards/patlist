@@ -37,7 +37,10 @@ $timenow = date("YmdHis");
 $test = \filter_input(\INPUT_POST, 'taskval');
 
 $xml = simplexml_load_file("currlist.xml");
+$chg = (simplexml_load_file("change.xml")) ?: new SimpleXMLElement('<root />');     // load change.xml if exists or start <root> in local memory
+
 $id = $xml->xpath("id[@mrn='".$mrn."']");
+    //  This section for reading values for this ID from existing currlist
     $demog = $id[0]->xpath('demog');
         $nameL = $demog[0]->name_last;
         $nameF = $demog[0]->name_first;
