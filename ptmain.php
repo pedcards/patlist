@@ -233,21 +233,24 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $openme = 'TD';
     }
     if ($edit == "status") {
-        $statusCons = \filter_input(\INPUT_POST, 'statusCons');
+        if (empty($status)) {
+            $status = $id[0]->addChild('status');
+        }
+        if (\filter_input(\INPUT_POST, 'statusCons')) {
+            $status->attributes()->cons = $statusCons;
+        }
         $statusTxp = \filter_input(\INPUT_POST, 'statusTxp');
         $statusRes = \filter_input(\INPUT_POST, 'statusRes');
         $statusScamp = \filter_input(\INPUT_POST, 'statusScamp');
-        $status->attributes()->cons = $statusCons;
         $status->attributes()->txp = $statusTxp;
         $status->attributes()->res = $statusRes;
         $status->attributes()->scamp = $statusScamp;
-        if (empty($status)) {
-            $status = $id[0]->addChild('status');
-            $status->addAttribute("cons",$statusCons);
-            $status->addAttribute("txp",$statusTxp);
-            $status->addAttribute("res",$statusRes);
-            $status->addAttribute("scamp",$statusScamp);
-        }
+//        {
+//            $status->addAttribute("cons",$statusCons);
+//            $status->addAttribute("txp",$statusTxp);
+//            $status->addAttribute("res",$statusRes);
+//            $status->addAttribute("scamp",$statusScamp);
+//        }
         $status['ed']=$timenow;
         $status['au']=$user;
         $xml->asXML("currlist.xml");
