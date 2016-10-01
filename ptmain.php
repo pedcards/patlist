@@ -77,12 +77,17 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $notes = $id[0]->addChild('notes');
         $xml->asXML("currlist.xml");
     }
-        $notesWk = $notes[0]->weekly;
-        $notesPn = $notes[0]->progress;
-
-    $plan = $id[0]->plan;
-        $planTasks = $plan[0]->tasks;
-        $planDone = $plan[0]->done;
+    $notesWk = $notes[0]->weekly;
+    $notesPn = $notes[0]->progress;
+    
+    if (!($plan = $id[0]->plan)) {                                              // create <plan> node if missing
+        $plan = $id[0]->addChild('plan');
+        $xml->asXML("currlist.xml");
+    }
+    $planTasks = $plan[0]->tasks;
+    $planDone = $plan[0]->done;
+    
+    //
     $todoCk = \filter_input(\INPUT_GET, 'td');
     if (!empty($todoCk)) {
         if ($todoCk=="cl") {
