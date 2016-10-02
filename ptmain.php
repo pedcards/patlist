@@ -24,7 +24,7 @@
 <body>
 <?php
 error_reporting(-1);
-$user = htmlentities($_SERVER['REMOTE_USER']);
+$user = (htmlentities($_SERVER['REMOTE_USER'])) ?: 'TEST';
 $refer = htmlentities($_SERVER['HTTP_REFERER']);
     if (strpos($refer, 'ptmain.php') == FALSE) {
         $_SESSION['ref'] = $refer;
