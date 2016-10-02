@@ -244,16 +244,9 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $status['txp']=$statusTxp;
         $status['res']=$statusRes;
         $status['scamp']=$statusScamp;
+//        Synonyms
 //        $status->attributes()->cons = $statusCons;
-//        $status->attributes()->txp = $statusTxp;
-//        $status->attributes()->res = $statusRes;
-//        $status->attributes()->scamp = $statusScamp;
-//        {
-//            $status->addAttribute("cons",$statusCons);
-//            $status->addAttribute("txp",$statusTxp);
-//            $status->addAttribute("res",$statusRes);
-//            $status->addAttribute("scamp",$statusScamp);
-//        }
+//        $status->addAttribute("cons",$statusCons);
         
         $status['ed']=$timenow;
         $status['au']=$user;
@@ -283,24 +276,16 @@ $edit = \filter_input(\INPUT_POST, 'edit');
 
 function cloneBlob($blob,$type,$change='') {
     global $mrn, $chg;
-    $node = $chg[0]->appendChild('node');
+    $node = $chg[0]->addChild('node');
     $node['MRN'] = $mrn;
     $node['type'] = $type;
     $node['change'] = $change;
     $dom_blob = dom_import_simplexml($blob[0]);
     $dom_node = dom_import_simplexml($node[0]);
-    $dom_new = $dom_node->appendChild($dom_blob->cloneNode(true));
+    $dom_new = $dom_node->appendChild($dom_node->ownerDocument->importNode($dom_blob,true));
     simplexml_import_dom($dom_new);
     $chg->asXML("change.xml");
 }
-//                    $trash = $id[0]->trash;
-//                    $todoTmp[0]->addAttribute('del',$timenow);
-//                    $dom_task = dom_import_simplexml($planTasks[0]);
-//                    $dom_todo = dom_import_simplexml($todoTmp[0]);
-//                    $dom_trash = dom_import_simplexml($trash[0]);
-//                    $dom_new = $dom_trash->appendChild($dom_todo->cloneNode(true));
-//                    simplexml_import_dom($dom_new);
-//                    unset($todoTmp[0][0]);
 
 function makedate($a) {
     if ($a) {
