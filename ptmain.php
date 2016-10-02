@@ -138,6 +138,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $DX['ed'] = $timenow;
         $DX['au'] = $user;
         $xml->asXML("currlist.xml");
+        cloneBlob($DX, 'dx', 'change');
         //$openme = 'DX';
     }
     if ($edit == "wksumm") {
