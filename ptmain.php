@@ -236,21 +236,25 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         if (empty($status)) {
             $status = $id[0]->addChild('status');
         }
-        if (\filter_input(\INPUT_POST, 'statusCons')) {
-            $status->attributes()->cons = $statusCons;
-        }
+        $statusCons = \filter_input(\INPUT_POST, 'statusCons');
         $statusTxp = \filter_input(\INPUT_POST, 'statusTxp');
         $statusRes = \filter_input(\INPUT_POST, 'statusRes');
         $statusScamp = \filter_input(\INPUT_POST, 'statusScamp');
-        $status->attributes()->txp = $statusTxp;
-        $status->attributes()->res = $statusRes;
-        $status->attributes()->scamp = $statusScamp;
+        $status['cons']=$statusCons;
+        $status['txp']=$statusTxp;
+        $status['res']=$statusRes;
+        $status['scamp']=$statusScamp;
+//        $status->attributes()->cons = $statusCons;
+//        $status->attributes()->txp = $statusTxp;
+//        $status->attributes()->res = $statusRes;
+//        $status->attributes()->scamp = $statusScamp;
 //        {
 //            $status->addAttribute("cons",$statusCons);
 //            $status->addAttribute("txp",$statusTxp);
 //            $status->addAttribute("res",$statusRes);
 //            $status->addAttribute("scamp",$statusScamp);
 //        }
+        
         $status['ed']=$timenow;
         $status['au']=$user;
         $xml->asXML("currlist.xml");
