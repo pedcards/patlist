@@ -261,9 +261,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
     }
     
     
-print_r($status);
-    
-    
+    cloneBlob($status[0],'stat');
     
 function cloneBlob($blob,$type,$change='') {
     global $mrn, $chg;
@@ -273,30 +271,10 @@ function cloneBlob($blob,$type,$change='') {
     $node['change'] = $change;
     $dom_blob = dom_import_simplexml($blob[0]);
     $dom_node = dom_import_simplexml($node[0]);
-    $dom_blob2 = $dom_node->importNode($dom_blob->documentElement->cloneNode(false),true);
-    print_r($dom_blob2);
-    //$dom_new = $dom_node->documentElement->appendChild($dom_blob2->cloneNode(true));
-//    $dom_new = $dom_node->appendChild($dom_node->importNode($dom_blob->documentElement, true));
+    $dom_new = $dom_node->appendChild($dom_node->ownerDocument->importNode($dom_blob,true));
     simplexml_import_dom($dom_new);
     $chg->asXML("change.xml");
 }
-//$dom = new DomDocument();
-//$dom->loadXml('<root attr1="a" attr2="b"><foo></foo></root>');
-//
-//$dom2 = new DomDocument();
-//$dom2->appendChild(
-//    $dom2->importNode($dom->documentElement->cloneNode(false), true) 
-//);
-
-//            $todoTmp = $planDone->xpath("todo[@created='".$index."']");
-//            $planTasks = $plan[0]->tasks;
-//            $todoTmp[0]->addAttribute('done',"");
-//            $dom_done = dom_import_simplexml($planDone[0]);
-//            $dom_todo = dom_import_simplexml($todoTmp[0]);
-//            $dom_tasks = dom_import_simplexml($planTasks[0]);
-//            $dom_new = $dom_tasks->appendChild($dom_todo->cloneNode(true));
-//            $new_node = simplexml_import_dom($dom_new);
-//            unset($todoTmp[0][0]);
 
 function makedate($a) {
     if ($a) {
