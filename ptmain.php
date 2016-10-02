@@ -258,6 +258,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $status['ed']=$timenow;
         $status['au']=$user;
         $xml->asXML("currlist.xml");
+        cloneBlob($status,'stat');
     }
     if ($edit == "provider") {
         $provCard = \filter_input(\INPUT_POST, 'provCard',FILTER_SANITIZE_SPECIAL_CHARS);
@@ -279,6 +280,27 @@ $edit = \filter_input(\INPUT_POST, 'edit');
     if ($edit) {
         file_put_contents("../change",$timenow.':'.$user);
     }
+
+function cloneBlob($blob,$type,$change='') {
+    global $mrn, $chg;
+    $node = $chg[0]->appendChild('node');
+    $node['MRN'] = $mrn;
+    $node['type'] = $type;
+    $node['change'] = $change;
+    $dom_blob = dom_import_simplexml($blob[0]);
+    $dom_node = dom_import_simplexml($node[0]);
+    $dom_new = $dom_node->appendChild($dom_blob->cloneNode(true));
+    simplexml_import_dom($dom_new);
+    $chg->asXML("change.xml");
+}
+//                    $trash = $id[0]->trash;
+//                    $todoTmp[0]->addAttribute('del',$timenow);
+//                    $dom_task = dom_import_simplexml($planTasks[0]);
+//                    $dom_todo = dom_import_simplexml($todoTmp[0]);
+//                    $dom_trash = dom_import_simplexml($trash[0]);
+//                    $dom_new = $dom_trash->appendChild($dom_todo->cloneNode(true));
+//                    simplexml_import_dom($dom_new);
+//                    unset($todoTmp[0][0]);
 
 function makedate($a) {
     if ($a) {
