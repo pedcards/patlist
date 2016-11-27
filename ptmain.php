@@ -164,6 +164,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
                         $id[0]->addChild('trash');
                         #$xml->asXML("currlist.xml");
                     }
+                    cloneBlob($notesTmp[0], 'del');
                     $trash = $id[0]->trash;
                     $notesTmp[0]->addAttribute('del',$timenow);
                     $dom_wk = dom_import_simplexml($notesWk[0]);
