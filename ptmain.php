@@ -71,6 +71,7 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $dxProb = $DX[0]->prob;
     $prov = $id[0]->prov;
         $provCard = (string)$prov->attributes()->provCard;
+        $provCSR = (string)$prov->attributes()->CSR;
         $provEP = (string)$prov->attributes()->provEP;
         $provPCP = (string)$prov->attributes()->provPCP;
 
@@ -259,20 +260,24 @@ $edit = \filter_input(\INPUT_POST, 'edit');
     }
     if ($edit == "provider") {
         $provCard = \filter_input(\INPUT_POST, 'provCard',FILTER_SANITIZE_SPECIAL_CHARS);
-        $provEP = \filter_input(\INPUT_POST, 'provEP');
-        $provPCP = \filter_input(\INPUT_POST, 'provPCP');
-        $prov->attributes()->provCard = $provCard;
-        $prov->attributes()->provEP = $provEP;
-        $prov->attributes()->provPCP = $provPCP;
+        $provEP = \filter_input(\INPUT_POST, 'provEP',FILTER_SANITIZE_SPECIAL_CHARS);
+        $provPCP = \filter_input(\INPUT_POST, 'provPCP',FILTER_SANITIZE_SPECIAL_CHARS);
+        $provCSR = \filter_input(\INPUT_POST, 'provCSR',FILTER_SANITIZE_SPECIAL_CHARS);
+        $prov['provCard'] = $provCard;
+        $prov['provEP'] = $provEP;
+        $prov['provPCP'] = $provPCP;
+        $prov['CSR'] = $provCSR;
         if (empty($prov)) {
             $prov = $id[0]->addChild('prov');
             $prov->addAttribute("provCard",$provCard);
             $prov->addAttribute("provEP",$provEP);
             $prov->addAttribute("provPCP",$provPCP);
+            $prov->addAttribute("CSR",$provCSR);
         }
         $prov['ed'] = $timenow;
         $prov['au'] = $user;
         $xml->asXML("currlist.xml");
+        cloneBlob($prov,'prov');
     }
     if ($edit) {
         file_put_contents("../change",$timenow.':'.$user);
@@ -360,6 +365,7 @@ function dialogConfirm() {
         <form method="post" <?php echo 'action="ptmain.php?id='.$mrn.'"'; ?> data-ajax="false">
             <div style="padding:10px 20px;">
                 <input name="provCard" id="editCard" value="<?php if (!empty($provCard)) { echo $provCard; } ?>" placeholder="Cardiologist" data-theme="a" type="text">
+                <input name="provCSR" id="editCSR" value="<?php if (!empty($provCSR)) { echo $provCSR; } ?>" placeholder="Surgeon" data-theme="a" type="text">
                 <input name="provEP" id="editEP" value="<?php if (!empty($provEP)) { echo $provEP; } ?>" placeholder="Electrophysiologist" data-theme="a" type="text">
                 <input name="provPCP" id="editPCP" value="<?php if (!empty($provPCP)) { echo $provPCP; } ?>" placeholder="PCP" data-theme="a" type="text">
                 <input type="hidden" name="edit" value="provider">
