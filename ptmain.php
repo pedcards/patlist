@@ -132,13 +132,13 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         {
             unset($tmp[0]); // removes all children, and 'diagnosis' as well.
         }
-        $DX = $id[0]->addChild('diagnoses'); //$DX->addAttribute("date","now");
+        $DX = $id[0]->addChild('diagnoses'); 
             $DX[0]->addChild("notes", $dxNotes);
             $DX[0]->addChild("card", $dxCrd);
             $DX[0]->addChild("ep", $dxEP);
             $DX[0]->addChild("surg", $dxSurg);
             $DX[0]->addChild("prob", $dxProb);
-        $DX['ed'] = $timenow;
+        $DX['ed'] = $timenow;                       //$DX->addAttribute("date","now");
         $DX['au'] = $user;
         $xml->asXML("currlist.xml");
         cloneBlob($DX, 'dx', 'change');
