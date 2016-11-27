@@ -70,10 +70,10 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $dxSurg = $DX[0]->surg;
         $dxProb = $DX[0]->prob;
     $prov = $id[0]->prov;
-        $provCard = (string)$prov->attributes()->provCard;
-        $provCSR = (string)$prov->attributes()->CSR;
-        $provEP = (string)$prov->attributes()->provEP;
-        $provPCP = (string)$prov->attributes()->provPCP;
+        $provCard = (string)$prov['provCard'];                                  // synonym for  (string)$prov->attributes()->provCard; 
+        $provCSR = (string)$prov['CSR'];
+        $provEP = (string)$prov['provEP'];
+        $provPCP = (string)$prov['provPCP'];
 
     if (!($notes = $id[0]->notes)) {                                            // create <notes> node if missing
         $notes = $id[0]->addChild('notes');
