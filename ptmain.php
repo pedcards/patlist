@@ -68,6 +68,7 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $dxCrd = $DX[0]->card;
         $dxEP = $DX[0]->ep;
         $dxSurg = $DX[0]->surg;
+        $dxProb = $DX[0]->prob;
     $prov = $id[0]->prov;
         $provCard = (string)$prov->attributes()->provCard;
         $provEP = (string)$prov->attributes()->provEP;
@@ -126,6 +127,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $dxCrd =  \filter_input(\INPUT_POST, 'dxCrd00', FILTER_SANITIZE_SPECIAL_CHARS);
         $dxEP =   \filter_input(\INPUT_POST, 'dxEP00', FILTER_SANITIZE_SPECIAL_CHARS);
         $dxSurg = \filter_input(\INPUT_POST, 'dxSurg00', FILTER_SANITIZE_SPECIAL_CHARS);
+        $dxProb = \filter_input(\INPUT_POST, 'dxProb00', FILTER_SANITIZE_SPECIAL_CHARS);
         foreach ($DX as $tmp)
         {
             unset($tmp[0]); // removes all children, and 'diagnosis' as well.
@@ -135,6 +137,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
             $DX[0]->addChild("card", $dxCrd);
             $DX[0]->addChild("ep", $dxEP);
             $DX[0]->addChild("surg", $dxSurg);
+            $DX[0]->addChild("prob", $dxProb);
         $DX['ed'] = $timenow;
         $DX['au'] = $user;
         $xml->asXML("currlist.xml");
@@ -568,6 +571,8 @@ function dialogConfirm() {
     <textarea cols="40" rows="8" name="dxEP00" id="textarea-dxEP"><?php echo $dxEP; ?></textarea>
     <label for="textarea-dxSurg">Surgical/Cath/Interventions:</label>
     <textarea cols="40" rows="8" name="dxSurg00" id="textarea-dxSurg"><?php echo $dxSurg; ?></textarea>
+    <label for="textarea-dxProb">Problem list:</label>
+    <textarea cols="40" rows="8" name="dxProb00" id="textarea-dxProb"><?php echo $dxProb; ?></textarea>
     <input type="submit" class="ui-btn ui-shadow ui-btn-icon-right ui-corner-all ui-icon-edit" value="SAVE" data-theme="b">
     <input type="hidden" name="edit" value="dx" />
 </form>
