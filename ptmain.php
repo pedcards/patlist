@@ -179,6 +179,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
                 $notesTmp[0][0] = $editval;
                 $notesTmp[0][0]['ed'] = $timenow;
                 $notesTmp[0][0]['au'] = $user;
+                cloneBlob($notesTmp[0], 'edit');
             }
         } else {
             //add a note
