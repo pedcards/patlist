@@ -164,16 +164,16 @@ $edit = \filter_input(\INPUT_POST, 'edit');
                         $id[0]->addChild('trash');
                         #$xml->asXML("currlist.xml");
                     }
-                    cloneBlob($notesTmp[0], 'del');
                     $trash = $id[0]->trash;
-                    $notesTmp[0]->addAttribute('del',$timenow);
+                    $notesTmp[0][0]['del'] = $timenow;
+                    cloneBlob($notesTmp[0],'summary','del');
+                    
                     $dom_wk = dom_import_simplexml($notesWk[0]);
                     $dom_summ = dom_import_simplexml($notesTmp[0]);
                     $dom_trash = dom_import_simplexml($trash[0]);
                     $dom_new = $dom_trash->appendChild($dom_summ->cloneNode(true));
                     $new_node = simplexml_import_dom($dom_new);
                     unset($notesTmp[0][0]);
-                    #$xml->asXML("currlist.xml");
                 }
             } else {
                 $notesTmp[0][0] = $editval;
