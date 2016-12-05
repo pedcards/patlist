@@ -179,7 +179,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
                 $notesTmp[0][0] = $editval;
                 $notesTmp[0][0]['ed'] = $timenow;
                 $notesTmp[0][0]['au'] = $user;
-                cloneBlob($notesTmp[0], 'edit');
+                cloneBlob($notesTmp[0],'summary','edit');
             }
         } else {
             //add a note
@@ -188,7 +188,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
             $summ->addAttribute('created', $editdate);
             $summ->addAttribute('ed',$timenow);
             $summ->addAttribute('au', $user);
-            cloneBlob($notesTmp[0], 'add');
+            cloneBlob($summ,'summary','add');
         }
         $xml->asXML("currlist.xml");
         $openme = 'WK';
