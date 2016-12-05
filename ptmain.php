@@ -600,6 +600,14 @@ if ($edtype=="S") {
     $notesTmp = $notesWk->xpath("summary[@created='".$index."']")[0];
     if (!empty($notesTmp)) {
         $notesDate = $notesTmp->attributes()->date;
+        $notes_Y = substr($notesDate,0,4);
+        $notes_M = substr($notesDate,4,2);
+        $notes_D = substr($notesDate,6,2);
+    } else {
+        $notesDate = date("Ymd");
+        $notes_Y = date("Y");
+        $notes_M = date("m");
+        $notes_D = date("d");
     }
     if (($index) and !($notesTmp)) {
     ?>
@@ -618,9 +626,9 @@ if ($edtype=="S") {
                 echo date("YmdHis"); 
             } ?>" />
         <input type="hidden" name="idxdate" value="<?php echo $index; ?>" />
-        <label for="textarea-wkSum">Weekly summary: <?php if ($index) {echo substr($notesDate,4,2).'/'.substr($notesDate,6,2).' @ '.substr($notesDate,8,4);}?></label>
+        <label for="textarea-wkSum">Weekly summary: <?php if ($index) {echo $notes_M.'/'.$notes_D.' @ '.$notes_Y;}?></label>
         <textarea cols="40" rows="8" name="wkSumm" id="textarea-wkSum" autofocus><?php echo $notesTmp;?></textarea>
-        <input type="text" data-role="datebox" data-options='{"mode":"calbox"}'>
+        <input type="text" data-role="datebox" data-options='{"mode":"calbox", "overrideDateFormat":"%m/%d/%Y", "defaultValue":[<?php echo $notes_Y.','.(ltrim($notes_M,"0")-1).','.ltrim($notes_D,"0"); ?>], "showInitialValue":true}'>
         <input type="submit" class="ui-btn ui-shadow ui-btn-icon-right ui-corner-all ui-icon-edit" name="action" value="SAVE" data-theme="b" />
         <?php 
         if (!empty($index)) {
