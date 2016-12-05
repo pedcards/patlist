@@ -24,7 +24,7 @@
 <body>
 <?php
 error_reporting(-1);
-$user = htmlentities($_SERVER['REMOTE_USER']);
+$user = (htmlentities($_SERVER['REMOTE_USER'])) ?: 'TEST';
 $refer = htmlentities($_SERVER['HTTP_REFERER']);
     if (strpos($refer, 'ptmain.php') == FALSE) {
         $_SESSION['ref'] = $refer;
@@ -37,7 +37,10 @@ $timenow = date("YmdHis");
 $test = \filter_input(\INPUT_POST, 'taskval');
 
 $xml = simplexml_load_file("currlist.xml");
+$chg = (simplexml_load_file("change.xml")) ?: new SimpleXMLElement('<root />');     // load change.xml if exists or start <root> in local memory
+
 $id = $xml->xpath("id[@mrn='".$mrn."']");
+    //  This section for reading values for this ID from existing currlist
     $demog = $id[0]->xpath('demog');
         $nameL = $demog[0]->name_last;
         $nameF = $demog[0]->name_first;
@@ -50,10 +53,10 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $unit = $data[0]->unit;
         $room = $data[0]->room;
     $status = $id[0]->status;
-        $statusCons = (string)$status->attributes()->cons;
-        $statusTxp = (string)$status->attributes()->txp;
-        $statusRes = (string)$status->attributes()->res;
-        $statusScamp = (string)$status->attributes()->scamp;
+        $statusCons = (string)$status['cons'];                      // (string)$status->attributes()->cons;
+        $statusTxp = (string)$status['txp'];
+        $statusRes = (string)$status['res'];
+        $statusScamp = (string)$status['scamp'];
     $info = $id[0]->xpath('info');
         $dcw = $info[0]->dcw;
         $allergies = $info[0]->allergies;
@@ -65,21 +68,28 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $dxCrd = $DX[0]->card;
         $dxEP = $DX[0]->ep;
         $dxSurg = $DX[0]->surg;
+        $dxProb = $DX[0]->prob;
     $prov = $id[0]->prov;
-        $provCard = (string)$prov->attributes()->provCard;
-        $provEP = (string)$prov->attributes()->provEP;
-        $provPCP = (string)$prov->attributes()->provPCP;
+        $provCard = (string)$prov['provCard'];                                  // synonym for  (string)$prov->attributes()->provCard; 
+        $provCSR = (string)$prov['CSR'];
+        $provEP = (string)$prov['provEP'];
+        $provPCP = (string)$prov['provPCP'];
 
     if (!($notes = $id[0]->notes)) {                                            // create <notes> node if missing
         $notes = $id[0]->addChild('notes');
         $xml->asXML("currlist.xml");
     }
-        $notesWk = $notes[0]->weekly;
-        $notesPn = $notes[0]->progress;
-
-    $plan = $id[0]->plan;
-        $planTasks = $plan[0]->tasks;
-        $planDone = $plan[0]->done;
+    $notesWk = $notes[0]->weekly;
+    $notesPn = $notes[0]->progress;
+    
+    if (!($plan = $id[0]->plan)) {                                              // create <plan> node if missing
+        $plan = $id[0]->addChild('plan');
+        $xml->asXML("currlist.xml");
+    }
+    $planTasks = $plan[0]->tasks;
+    $planDone = $plan[0]->done;
+    
+    //
     $todoCk = \filter_input(\INPUT_GET, 'td');
     if (!empty($todoCk)) {
         if ($todoCk=="cl") {
@@ -118,18 +128,21 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $dxCrd =  \filter_input(\INPUT_POST, 'dxCrd00', FILTER_SANITIZE_SPECIAL_CHARS);
         $dxEP =   \filter_input(\INPUT_POST, 'dxEP00', FILTER_SANITIZE_SPECIAL_CHARS);
         $dxSurg = \filter_input(\INPUT_POST, 'dxSurg00', FILTER_SANITIZE_SPECIAL_CHARS);
+        $dxProb = \filter_input(\INPUT_POST, 'dxProb00', FILTER_SANITIZE_SPECIAL_CHARS);
         foreach ($DX as $tmp)
         {
             unset($tmp[0]); // removes all children, and 'diagnosis' as well.
         }
-        $DX = $id[0]->addChild('diagnoses'); //$DX->addAttribute("date","now");
+        $DX = $id[0]->addChild('diagnoses'); 
             $DX[0]->addChild("notes", $dxNotes);
             $DX[0]->addChild("card", $dxCrd);
             $DX[0]->addChild("ep", $dxEP);
             $DX[0]->addChild("surg", $dxSurg);
-        $DX['ed'] = $timenow;
+            $DX[0]->addChild("prob", $dxProb);
+        $DX['ed'] = $timenow;                       //$DX->addAttribute("date","now");
         $DX['au'] = $user;
         $xml->asXML("currlist.xml");
+        cloneBlob($DX, 'dx', 'change');
         //$openme = 'DX';
     }
     if ($edit == "wksumm") {
@@ -152,19 +165,21 @@ $edit = \filter_input(\INPUT_POST, 'edit');
                         #$xml->asXML("currlist.xml");
                     }
                     $trash = $id[0]->trash;
-                    $notesTmp[0]->addAttribute('del',$timenow);
+                    $notesTmp[0][0]['del'] = $timenow;
+                    cloneBlob($notesTmp[0],'summary','del');
+                    
                     $dom_wk = dom_import_simplexml($notesWk[0]);
                     $dom_summ = dom_import_simplexml($notesTmp[0]);
                     $dom_trash = dom_import_simplexml($trash[0]);
                     $dom_new = $dom_trash->appendChild($dom_summ->cloneNode(true));
                     $new_node = simplexml_import_dom($dom_new);
                     unset($notesTmp[0][0]);
-                    #$xml->asXML("currlist.xml");
                 }
             } else {
                 $notesTmp[0][0] = $editval;
                 $notesTmp[0][0]['ed'] = $timenow;
                 $notesTmp[0][0]['au'] = $user;
+                cloneBlob($notesTmp[0],'summary','edit');
             }
         } else {
             //add a note
@@ -173,6 +188,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
             $summ->addAttribute('created', $editdate);
             $summ->addAttribute('ed',$timenow);
             $summ->addAttribute('au', $user);
+            cloneBlob($summ,'summary','add');
         }
         $xml->asXML("currlist.xml");
         $openme = 'WK';
@@ -225,45 +241,63 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $openme = 'TD';
     }
     if ($edit == "status") {
+        if (empty($status)) {
+            $status = $id[0]->addChild('status');
+        }
         $statusCons = \filter_input(\INPUT_POST, 'statusCons');
         $statusTxp = \filter_input(\INPUT_POST, 'statusTxp');
         $statusRes = \filter_input(\INPUT_POST, 'statusRes');
         $statusScamp = \filter_input(\INPUT_POST, 'statusScamp');
-        $status->attributes()->cons = $statusCons;
-        $status->attributes()->txp = $statusTxp;
-        $status->attributes()->res = $statusRes;
-        $status->attributes()->scamp = $statusScamp;
-        if (empty($status)) {
-            $status = $id[0]->addChild('status');
-            $status->addAttribute("cons",$statusCons);
-            $status->addAttribute("txp",$statusTxp);
-            $status->addAttribute("res",$statusRes);
-            $status->addAttribute("scamp",$statusScamp);
-        }
+        $status['cons']=$statusCons;
+        $status['txp']=$statusTxp;
+        $status['res']=$statusRes;
+        $status['scamp']=$statusScamp;
+//        Synonyms
+//        $status->attributes()->cons = $statusCons;
+//        $status->addAttribute("cons",$statusCons);
+        
         $status['ed']=$timenow;
         $status['au']=$user;
         $xml->asXML("currlist.xml");
+        cloneBlob($status,'stat');
     }
     if ($edit == "provider") {
         $provCard = \filter_input(\INPUT_POST, 'provCard',FILTER_SANITIZE_SPECIAL_CHARS);
-        $provEP = \filter_input(\INPUT_POST, 'provEP');
-        $provPCP = \filter_input(\INPUT_POST, 'provPCP');
-        $prov->attributes()->provCard = $provCard;
-        $prov->attributes()->provEP = $provEP;
-        $prov->attributes()->provPCP = $provPCP;
+        $provEP = \filter_input(\INPUT_POST, 'provEP',FILTER_SANITIZE_SPECIAL_CHARS);
+        $provPCP = \filter_input(\INPUT_POST, 'provPCP',FILTER_SANITIZE_SPECIAL_CHARS);
+        $provCSR = \filter_input(\INPUT_POST, 'provCSR',FILTER_SANITIZE_SPECIAL_CHARS);
+        $prov['provCard'] = $provCard;
+        $prov['provEP'] = $provEP;
+        $prov['provPCP'] = $provPCP;
+        $prov['CSR'] = $provCSR;
         if (empty($prov)) {
             $prov = $id[0]->addChild('prov');
             $prov->addAttribute("provCard",$provCard);
             $prov->addAttribute("provEP",$provEP);
             $prov->addAttribute("provPCP",$provPCP);
+            $prov->addAttribute("CSR",$provCSR);
         }
         $prov['ed'] = $timenow;
         $prov['au'] = $user;
         $xml->asXML("currlist.xml");
+        cloneBlob($prov,'prov');
     }
     if ($edit) {
         file_put_contents("../change",$timenow.':'.$user);
     }
+
+function cloneBlob($blob,$type,$change='') {
+    global $mrn, $chg;
+    $node = $chg[0]->addChild('node');
+    $node['MRN'] = $mrn;
+    $node['type'] = $type;
+    $node['change'] = $change;
+    $dom_blob = dom_import_simplexml($blob[0]);
+    $dom_node = dom_import_simplexml($node[0]);
+    $dom_new = $dom_node->appendChild($dom_node->ownerDocument->importNode($dom_blob,true));
+    simplexml_import_dom($dom_new);
+    $chg->asXML("change.xml");
+}
 
 function makedate($a) {
     if ($a) {
@@ -334,6 +368,7 @@ function dialogConfirm() {
         <form method="post" <?php echo 'action="ptmain.php?id='.$mrn.'"'; ?> data-ajax="false">
             <div style="padding:10px 20px;">
                 <input name="provCard" id="editCard" value="<?php if (!empty($provCard)) { echo $provCard; } ?>" placeholder="Cardiologist" data-theme="a" type="text">
+                <input name="provCSR" id="editCSR" value="<?php if (!empty($provCSR)) { echo $provCSR; } ?>" placeholder="Surgeon" data-theme="a" type="text">
                 <input name="provEP" id="editEP" value="<?php if (!empty($provEP)) { echo $provEP; } ?>" placeholder="Electrophysiologist" data-theme="a" type="text">
                 <input name="provPCP" id="editPCP" value="<?php if (!empty($provPCP)) { echo $provPCP; } ?>" placeholder="PCP" data-theme="a" type="text">
                 <input type="hidden" name="edit" value="provider">
@@ -545,6 +580,8 @@ function dialogConfirm() {
     <textarea cols="40" rows="8" name="dxEP00" id="textarea-dxEP"><?php echo $dxEP; ?></textarea>
     <label for="textarea-dxSurg">Surgical/Cath/Interventions:</label>
     <textarea cols="40" rows="8" name="dxSurg00" id="textarea-dxSurg"><?php echo $dxSurg; ?></textarea>
+    <label for="textarea-dxProb">Problem list:</label>
+    <textarea cols="40" rows="8" name="dxProb00" id="textarea-dxProb"><?php echo $dxProb; ?></textarea>
     <input type="submit" class="ui-btn ui-shadow ui-btn-icon-right ui-corner-all ui-icon-edit" value="SAVE" data-theme="b">
     <input type="hidden" name="edit" value="dx" />
 </form>
@@ -563,6 +600,14 @@ if ($edtype=="S") {
     $notesTmp = $notesWk->xpath("summary[@created='".$index."']")[0];
     if (!empty($notesTmp)) {
         $notesDate = $notesTmp->attributes()->date;
+        $notes_Y = substr($notesDate,0,4);
+        $notes_M = substr($notesDate,4,2);
+        $notes_D = substr($notesDate,6,2);
+    } else {
+        $notesDate = date("Ymd");
+        $notes_Y = date("Y");
+        $notes_M = date("m");
+        $notes_D = date("d");
     }
     if (($index) and !($notesTmp)) {
     ?>
@@ -581,9 +626,9 @@ if ($edtype=="S") {
                 echo date("YmdHis"); 
             } ?>" />
         <input type="hidden" name="idxdate" value="<?php echo $index; ?>" />
-        <label for="textarea-wkSum">Weekly summary: <?php if ($index) {echo substr($notesDate,4,2).'/'.substr($notesDate,6,2).' @ '.substr($notesDate,8,4);}?></label>
+        <label for="textarea-wkSum">Weekly summary: <?php if ($index) {echo $notes_M.'/'.$notes_D.' @ '.$notes_Y;}?></label>
         <textarea cols="40" rows="8" name="wkSumm" id="textarea-wkSum" autofocus><?php echo $notesTmp;?></textarea>
-        <input type="text" data-role="datebox" data-options='{"mode":"calbox"}'>
+        <input type="text" data-role="datebox" data-options='{"mode":"calbox", "overrideDateFormat":"%m/%d/%Y", "defaultValue":[<?php echo $notes_Y.','.(ltrim($notes_M,"0")-1).','.ltrim($notes_D,"0"); ?>], "showInitialValue":true}'>
         <input type="submit" class="ui-btn ui-shadow ui-btn-icon-right ui-corner-all ui-icon-edit" name="action" value="SAVE" data-theme="b" />
         <?php 
         if (!empty($index)) {
