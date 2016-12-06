@@ -468,7 +468,7 @@ function dialogConfirm() {
                     $tmpStr = (string)$tmp;
                     
                     echo '
-                    <li data-icon="recycle">
+                    <li data-icon="back">
                         <a href="#" data-ajax="false">
                             <p style="white-space: pre-wrap"><i>'.$tmpStr.'</i></p><span class="ui-li-count"><i>'.$tmpDate.'</i></span>
                         </a>
