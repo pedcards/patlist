@@ -90,15 +90,17 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
     $planDone = $plan[0]->done;
     
     //
-    $todoCk = \filter_input(\INPUT_GET, 'td');
+    $todoCk = \filter_input(\INPUT_GET, 'td');                                  // todo has been checked or unchecked
     if (!empty($todoCk)) {
-        if ($todoCk=="cl") {
+        if ($todoCk=="cl") {                                                    // CHECKED
             if (empty($planDone)) {
                 $plan[0]->addChild('done');
             }
             $todoTmp = $planTasks->xpath("todo[@created='".$index."']");
             $planDone = $plan[0]->done;
-            $todoTmp[0]->addAttribute('done',$timenow);
+            $todoTmp[0]['done'] = $timenow;
+            cloneBlob($todoTmp[0], 'todo','done');
+            
             $dom_tasks = dom_import_simplexml($planTasks[0]);
             $dom_todo = dom_import_simplexml($todoTmp[0]);
             $dom_done= dom_import_simplexml($planDone[0]);
@@ -106,10 +108,12 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
             $new_node = simplexml_import_dom($dom_new);
             unset($todoTmp[0][0]);
         }
-        if ($todoCk=="uc") {
+        if ($todoCk=="uc") {                                                    // UNCHECK from TRASH
             $todoTmp = $planDone->xpath("todo[@created='".$index."']");
             $planTasks = $plan[0]->tasks;
-            $todoTmp[0]->addAttribute('done',"");
+            $todoTmp[0]['done'] = "";
+            cloneBlob($todoTmp[0],'todo','undo');
+            
             $dom_done = dom_import_simplexml($planDone[0]);
             $dom_todo = dom_import_simplexml($todoTmp[0]);
             $dom_tasks = dom_import_simplexml($planTasks[0]);
@@ -162,7 +166,6 @@ $edit = \filter_input(\INPUT_POST, 'edit');
                 if ($confirm=='Y') {
                     if (empty($trash)) {
                         $id[0]->addChild('trash');
-                        #$xml->asXML("currlist.xml");
                     }
                     $trash = $id[0]->trash;
                     $notesTmp[0][0]['del'] = $timenow;
@@ -215,12 +218,14 @@ $edit = \filter_input(\INPUT_POST, 'edit');
                         $id[0]->addChild('trash');
                     }
                     $trash = $id[0]->trash;
-                    $todoTmp[0]->addAttribute('del',$timenow);
+                    $todoTmp[0][0]['del'] = $timenow;
+                    cloneBlob($todoTmp[0],'todo','del');
+                    
                     $dom_task = dom_import_simplexml($planTasks[0]);
                     $dom_todo = dom_import_simplexml($todoTmp[0]);
                     $dom_trash = dom_import_simplexml($trash[0]);
                     $dom_new = $dom_trash->appendChild($dom_todo->cloneNode(true));
-                    simplexml_import_dom($dom_new);
+                    $new_node = simplexml_import_dom($dom_new);
                     unset($todoTmp[0][0]);
                 }
             } else {
@@ -228,14 +233,16 @@ $edit = \filter_input(\INPUT_POST, 'edit');
                 $todoTmp[0][0]['due'] = $editdate;
                 $todoTmp[0][0]['ed'] = $timenow;
                 $todoTmp[0][0]['au'] = $user;
+                cloneBlob($todoTmp[0],'todo','edit');
             }
         } else {
             //add a note
-            $summ = $planTasks->addChild('todo', $editval);
-            $summ->addAttribute('due', $editdate);
-            $summ->addAttribute('created', $timenow);
-            $summ->addAttribute('ed',$timenow);
-            $summ->addAttribute('au', $user);
+            $todo = $planTasks->addChild('todo', $editval);
+            $todo->addAttribute('due', $editdate);
+            $todo->addAttribute('created', $timenow);
+            $todo->addAttribute('ed',$timenow);
+            $todo->addAttribute('au', $user);
+            cloneBlob($todo,'todo','add');
         }
         $xml->asXML("currlist.xml");
         $openme = 'TD';
@@ -281,9 +288,6 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $prov['au'] = $user;
         $xml->asXML("currlist.xml");
         cloneBlob($prov,'prov');
-    }
-    if ($edit) {
-        file_put_contents("../change",$timenow.':'.$user);
     }
 
 function cloneBlob($blob,$type,$change='') {
@@ -468,7 +472,7 @@ function dialogConfirm() {
                     $tmpStr = (string)$tmp;
                     
                     echo '
-                    <li data-icon="recycle">
+                    <li data-icon="back">
                         <a href="#" data-ajax="false">
                             <p style="white-space: pre-wrap"><i>'.$tmpStr.'</i></p><span class="ui-li-count"><i>'.$tmpDate.'</i></span>
                         </a>
