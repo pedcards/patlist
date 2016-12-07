@@ -90,15 +90,17 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
     $planDone = $plan[0]->done;
     
     //
-    $todoCk = \filter_input(\INPUT_GET, 'td');
+    $todoCk = \filter_input(\INPUT_GET, 'td');                                  // todo has been checked or unchecked
     if (!empty($todoCk)) {
-        if ($todoCk=="cl") {
+        if ($todoCk=="cl") {                                                    // CHECKED
             if (empty($planDone)) {
                 $plan[0]->addChild('done');
             }
             $todoTmp = $planTasks->xpath("todo[@created='".$index."']");
             $planDone = $plan[0]->done;
-            $todoTmp[0]->addAttribute('done',$timenow);
+            $todoTmp[0]['done'] = $timenow;
+            cloneBlob($todoTmp[0], 'todo','done');
+            
             $dom_tasks = dom_import_simplexml($planTasks[0]);
             $dom_todo = dom_import_simplexml($todoTmp[0]);
             $dom_done= dom_import_simplexml($planDone[0]);
@@ -106,10 +108,12 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
             $new_node = simplexml_import_dom($dom_new);
             unset($todoTmp[0][0]);
         }
-        if ($todoCk=="uc") {
+        if ($todoCk=="uc") {                                                    // UNCHECK from TRASH
             $todoTmp = $planDone->xpath("todo[@created='".$index."']");
             $planTasks = $plan[0]->tasks;
-            $todoTmp[0]->addAttribute('done',"");
+            $todoTmp[0]['done'] = "";
+            cloneBlob($todoTmp[0],'todo','undo');
+            
             $dom_done = dom_import_simplexml($planDone[0]);
             $dom_todo = dom_import_simplexml($todoTmp[0]);
             $dom_tasks = dom_import_simplexml($planTasks[0]);
