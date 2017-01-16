@@ -428,7 +428,20 @@ function dialogConfirm() {
     </fieldset>
     <input type="hidden" name="edit" value="provider" />
 </form>
-    
+<?php
+    if ($statusPM) { ?>
+<div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-mini="true" data-collapsed-icon="carat-r" data-expanded-icon="carat-d">
+    <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
+        <h3>Temporary pacing</h3>
+        <form>
+        </form>
+    </div>
+    <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
+        <h3>Permanent pacing</h3>
+    </div>
+</div>
+    <?php } ?>
+
 <div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-mini="true" data-collapsed-icon="carat-r" data-expanded-icon="carat-d">
     <div data-role="collapsible" data-content-theme="a" <?php if (empty($openme)) {echo 'data-collapsed="false"';}?>>
         <h3>Diagnoses</h3>
