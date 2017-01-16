@@ -433,30 +433,6 @@ function dialogConfirm() {
 <div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-mini="true" data-collapsed-icon="carat-r" data-expanded-icon="carat-d">
     <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
         <h3>Temporary pacing</h3>
-        <form>
-            <div class="ui-field-contain">
-                <label for="editMode" class="select">Mode:</label>
-                <select name="mode" id="editMode" data-native-menu="false" data-mini="true">
-                    <option>Select</option>
-                    <option value="DDD">DDD</option>
-                    <option value="VVI">VVI</option>
-                    <option value="VOO">VOO</option>
-                    <option value="AAI">AAI</option>
-                    <option value="AOO">AOO</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-            <div data-role="rangeslider">
-                <label for="editLRL">Lower-Upper Rate Limits:</label>
-                <input name="LRL" id="editLRL" min="0" max="200" value="80" type="range">
-                <label for="editURL">Rangeslider:</label>
-                <input name="URL" id="editURL" min="0" max="200" value="120" type="range">
-            </div>
-            <div>
-                <label for="editAVI">AV delay:</label>
-                <input name="AVI" id="editAVI" value="100" min="60" max="240" step="10" data-highlight="true" type="range">
-            </div>
-        </form>
     </div>
     <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
         <h3>Permanent pacing</h3>
@@ -640,6 +616,41 @@ function dialogConfirm() {
     <input type="submit" class="ui-btn ui-shadow ui-btn-icon-right ui-corner-all ui-icon-edit" value="SAVE" data-theme="b">
     <input type="hidden" name="edit" value="dx" />
 </form>
+</div><!-- /content -->
+
+</div><!-- /edit page -->
+<!-- ======================================================================= -->
+<div data-role="page" id="editPM" data-dom-cache="false">
+<div data-role="header" data-position="fixed">
+    <h4 style="white-space: normal; text-align: center" ><?php echo $nameL.', '.$nameF; ?></h4>
+    <a href="#" data-ajax="false" data-rel="back" class="ui-btn ui-shadow ui-btn-icon-left ui-corner-all ui-icon-delete ui-btn-icon-notext" >Cancel</a>
+</div><!-- /header -->
+
+<div data-role="content">
+    <form>
+        <div class="ui-field-contain">
+            <label for="editMode" class="select">Mode:</label>
+            <select name="mode" id="editMode" data-native-menu="false" data-mini="true">
+                <option>Select</option>
+                <option value="DDD">DDD</option>
+                <option value="VVI">VVI</option>
+                <option value="VOO">VOO</option>
+                <option value="AAI">AAI</option>
+                <option value="AOO">AOO</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div data-role="rangeslider">
+            <label for="editLRL">Lower-Upper Rate Limits:</label>
+            <input name="LRL" id="editLRL" min="0" max="200" value="80" type="range">
+            <label for="editURL">Rangeslider:</label>
+            <input name="URL" id="editURL" min="0" max="200" value="120" type="range">
+        </div>
+        <div>
+            <label for="editAVI">AV delay:</label>
+            <input name="AVI" id="editAVI" value="100" min="60" max="240" step="10" data-highlight="true" type="range">
+        </div>
+    </form>
 </div><!-- /content -->
 
 </div><!-- /edit page -->
