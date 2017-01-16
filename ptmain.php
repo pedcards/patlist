@@ -408,15 +408,25 @@ function dialogConfirm() {
     <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" class="ui-field-contain">
         <input name="statusCons" id="cbox-1a" type="checkbox" <?php if ($statusCons) { echo 'checked="checked"'; } ?> onChange="submit();">
         <label for="cbox-1a">Cons</label>
-        <input name="statusTxp" id="cbox-1b" type="checkbox" <?php if ($statusTxp) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-1b">Txp</label>
-        <input name="statusRes" id="cbox-1c" type="checkbox" <?php if ($statusRes) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-1c">Res</label>
-        <input name="statusScamp" id="cbox-1d" type="checkbox" <?php if ($statusScamp) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-1d">SCAMP</label>
+        <input name="statusRes" id="cbox-1b" type="checkbox" <?php if ($statusRes) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-1b">Res</label>
+        <input name="statusScamp" id="cbox-1c" type="checkbox" <?php if ($statusScamp) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-1c">SCAMP</label>
         <!--<input data-icon="camera" data-iconpos="notext" data-corners="false" value="Icon only" type="submit" >-->
     </fieldset>
     <input type="hidden" name="edit" value="status" />
+</form>
+<form method="post" <?php echo 'action="ptmain.php?id='.$mrn.'"'; ?>>
+    <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" class="ui-field-contain">
+        <input name="statusTxp" id="cbox-2a" type="checkbox" <?php if ($statusTxp) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-2a">Txp</label>
+        <input name="statusMil" id="cbox-2b" type="checkbox" <?php if ($statusMil) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-2b">Mil</label>
+        <input name="statusPM" id="cbox-2c" type="checkbox" <?php if ($statusPM) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-2c">PM</label>
+        <!--<input data-icon="camera" data-iconpos="notext" data-corners="false" value="Icon only" type="submit" >-->
+    </fieldset>
+    <input type="hidden" name="edit" value="provider" />
 </form>
     
 <div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-mini="true" data-collapsed-icon="carat-r" data-expanded-icon="carat-d">
