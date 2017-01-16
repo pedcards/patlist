@@ -432,10 +432,8 @@ function dialogConfirm() {
     if ($statusPM) { ?>
 <div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-mini="true" data-collapsed-icon="carat-r" data-expanded-icon="carat-d">
     <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
-        <h3>Temporary pacing</h3>
-    </div>
-    <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
-        <h3>Permanent pacing</h3>
+        <h3>Pacemaker settings</h3>
+        <a href="#editPM" class="ui-btn ui-mini ui-btn-icon-left ui-icon-edit">Add/Modify settings</a>
     </div>
 </div>
     <?php } ?>
