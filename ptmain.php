@@ -434,6 +434,18 @@ function dialogConfirm() {
     <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
         <h3>Temporary pacing</h3>
         <form>
+            <div class="ui-field-contain">
+                <label for="editMode" class="select">Mode:</label>
+                <select name="mode" id="editMode" data-native-menu="false" data-mini="true">
+                    <option>Select</option>
+                    <option value="DDD">DDD</option>
+                    <option value="VVI">VVI</option>
+                    <option value="VOO">VOO</option>
+                    <option value="AAI">AAI</option>
+                    <option value="AOO">AOO</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
         </form>
     </div>
     <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
