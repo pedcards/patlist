@@ -254,11 +254,9 @@ $edit = \filter_input(\INPUT_POST, 'edit');
             $status = $id[0]->addChild('status');
         }
         $statusCons = \filter_input(\INPUT_POST, 'statusCons');
-        $statusTxp = \filter_input(\INPUT_POST, 'statusTxp');
         $statusRes = \filter_input(\INPUT_POST, 'statusRes');
         $statusScamp = \filter_input(\INPUT_POST, 'statusScamp');
         $status['cons']=$statusCons;
-        $status['txp']=$statusTxp;
         $status['res']=$statusRes;
         $status['scamp']=$statusScamp;
 //        Synonyms
@@ -279,6 +277,12 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $prov['provEP'] = $provEP;
         $prov['provPCP'] = $provPCP;
         $prov['CSR'] = $provCSR;
+        $statusTxp = \filter_input(\INPUT_POST, 'statusTxp');
+        $statusMil = \filter_input(\INPUT_POST, 'statusMil');
+        $statusPM = \filter_input(\INPUT_POST, 'statusPM');
+        $prov['txp']=$statusTxp;
+        $prov['mil']=$statusMil;
+        $prov['pm']=$statusPM;
         if (empty($prov)) {
             $prov = $id[0]->addChild('prov');
             $prov->addAttribute("provCard",$provCard);
