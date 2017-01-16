@@ -74,6 +74,9 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $provCSR = (string)$prov['CSR'];
         $provEP = (string)$prov['provEP'];
         $provPCP = (string)$prov['provPCP'];
+        $provTxp = (string)$prov['txp'];
+        $provMil = (string)$prov['mil'];
+        $provPM = (string)$prov['pm'];
 
     if (!($notes = $id[0]->notes)) {                                            // create <notes> node if missing
         $notes = $id[0]->addChild('notes');
