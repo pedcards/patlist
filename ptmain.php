@@ -446,6 +446,12 @@ function dialogConfirm() {
                     <option value="other">Other</option>
                 </select>
             </div>
+            <div data-role="rangeslider">
+                <label for="editLRL">Lower-Upper Rate Limits:</label>
+                <input name="LRL" id="editLRL" min="0" max="200" value="80" type="range">
+                <label for="editURL">Rangeslider:</label>
+                <input name="URL" id="editURL" min="0" max="200" value="120" type="range">
+            </div>
         </form>
     </div>
     <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
