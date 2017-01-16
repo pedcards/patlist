@@ -87,7 +87,7 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $pm_Vs    = $PM[0]->Vs;
         $pm_notes = $PM[0]->notes;
     $PMtemp = $id[0]->pacing;
-    $PMleads = $PMtemp[0]->leads;
+    $PMleads = $PMtemp[0]->temp;
 echo 'here';
     $prov = $id[0]->prov;
         $provCard = (string)$prov['provCard'];                                  // synonym for  (string)$prov->attributes()->provCard; 
