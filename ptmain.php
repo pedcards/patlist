@@ -54,7 +54,6 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $room = $data[0]->room;
     $status = $id[0]->status;
         $statusCons = (string)$status['cons'];                      // (string)$status->attributes()->cons;
-        $statusTxp = (string)$status['txp'];
         $statusRes = (string)$status['res'];
         $statusScamp = (string)$status['scamp'];
     $info = $id[0]->xpath('info');
@@ -74,9 +73,9 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $provCSR = (string)$prov['CSR'];
         $provEP = (string)$prov['provEP'];
         $provPCP = (string)$prov['provPCP'];
-        $provTxp = (string)$prov['txp'];
-        $provMil = (string)$prov['mil'];
-        $provPM = (string)$prov['pm'];
+        $statusTxp = (string)$prov['txp'];
+        $statusMil = (string)$prov['mil'];
+        $statusPM = (string)$prov['pm'];
 
     if (!($notes = $id[0]->notes)) {                                            // create <notes> node if missing
         $notes = $id[0]->addChild('notes');
