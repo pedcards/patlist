@@ -452,6 +452,10 @@ function dialogConfirm() {
                 <label for="editURL">Rangeslider:</label>
                 <input name="URL" id="editURL" min="0" max="200" value="120" type="range">
             </div>
+            <div>
+                <label for="editAVI">AV delay:</label>
+                <input name="AVI" id="editAVI" value="100" min="60" max="240" step="10" data-highlight="true" type="range">
+            </div>
         </form>
     </div>
     <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
