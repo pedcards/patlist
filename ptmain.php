@@ -666,29 +666,48 @@ function dialogConfirm() {
 </div><!-- /header -->
 
 <div data-role="content">
-    <form>
+    <form method="post" action="#">
         <div class="ui-field-contain">
             <label for="editMode" class="select">Mode:</label>
             <select name="mode" id="editMode" data-native-menu="false" data-mini="true">
                 <option>Select</option>
-                <option value="DDD">DDD</option>
-                <option value="VVI">VVI</option>
-                <option value="VOO">VOO</option>
-                <option value="AAI">AAI</option>
-                <option value="AOO">AOO</option>
+                <option value="DDD" <?php if ($pmt_mode=='DDD') { echo 'selected="selected"';}?> >DDD</option>
+                <option value="VVI" <?php if ($pmt_mode=='VVI') { echo 'selected="selected"';}?> >VVI</option>
+                <option value="VOO" <?php if ($pmt_mode=='VOO') { echo 'selected="selected"';}?> >VOO</option>
+                <option value="AAI" <?php if ($pmt_mode=='AAI') { echo 'selected="selected"';}?> >AAI</option>
+                <option value="AOO" <?php if ($pmt_mode=='AOO') { echo 'selected="selected"';}?> >AOO</option>
                 <option value="other">Other</option>
             </select>
         </div>
         <div data-role="rangeslider">
             <label for="editLRL">Lower-Upper Rate Limits:</label>
-            <input name="LRL" id="editLRL" min="0" max="200" value="80" type="range">
+            <input name="LRL" id="editLRL" min="30" max="200" <?php echo 'value="'.$pmt_LRL.'"'?> type="range">
             <label for="editURL">Rangeslider:</label>
-            <input name="URL" id="editURL" min="0" max="200" value="120" type="range">
+            <input name="URL" id="editURL" min="30" max="200" <?php echo 'value="'.$pmt_URL.'"'?> type="range">
         </div>
         <div>
             <label for="editAVI">AV delay:</label>
-            <input name="AVI" id="editAVI" value="100" min="60" max="240" step="10" data-highlight="true" type="range">
+            <input name="AVI" id="editAVI" min="60" max="240" step="10" <?php echo 'value="'.$pmt_AVI.'"'?> data-highlight="true" type="range">
         </div>
+        <div>
+            <label for="editAVI">PVARP:</label>
+            <input name="AVI" id="editPVARP" min="150" max="300" step="10" <?php echo 'value="'.$pmt_PVARP.'"'?> data-highlight="true" type="range">
+        </div>
+        <div data-role="rangeslider">
+            <label for="editApThr">A-pace (threshold-setting):</label>
+            <input name="ApThr" id="editApThr" min="0" max="20" step="0.5" <?php echo 'value="'.$pmt_ApThr.'"'?> type="range">
+            <label for="editAp">Rangeslider:</label>
+            <input name="Ap" id="editAp" min="0" max="20" step="0.5" <?php echo 'value="'.$pmt_Ap.'"'?> type="range">
+        </div>
+        <div data-role="rangeslider">
+            <label for="editVpThr">V-pace (threshold-setting):</label>
+            <input name="VpThr" id="editVpThr" min="0" max="20" step="0.5" <?php echo 'value="'.$pmt_VpThr.'"'?> type="range">
+            <label for="editVp">Rangeslider:</label>
+            <input name="Vp" id="editVp" min="0" max="20" step="0.5" <?php echo 'value="'.$pmt_Vp.'"'?> type="range">
+        </div>
+        <br>
+        <input type="submit" class="ui-btn ui-shadow ui-btn-icon-right ui-corner-all ui-icon-edit" value="SAVE" data-theme="b">
+        <input type="hidden" name="edit" value="pm-temp" />
     </form>
 </div><!-- /content -->
 
