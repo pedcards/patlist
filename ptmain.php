@@ -86,8 +86,8 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $pm_Vp    = $PM->Vp;
         $pm_Vs    = $PM->Vs;
         $pm_notes = $PM->notes;
-    $PMtemp = $id[0]->pacing[0];
-    $PMleads = $PMtemp[0]->xpath('temp[last()]')[0];
+    $PMpacing = $id[0]->pacing[0];
+    $PMleads = $PMpacing[0]->xpath('temp[last()]')[0];
         $pmt_ed    = (string)$PMleads['ed'];
         $pmt_au    = (string)$PMleads['au'];
         $pmt_model = $PMleads->model;
@@ -331,6 +331,41 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $prov['au'] = $user;
         $xml->asXML("currlist.xml");
         cloneBlob($prov,'prov');
+    }
+    if ($edit == "pm-temp") {
+        $pmt_ed    = $timenow;
+        $pmt_au    = $user;
+        $pmt_mode  =  \filter_input(\INPUT_POST, 'mode',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_LRL   =  \filter_input(\INPUT_POST, 'LRL',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_URL   =  \filter_input(\INPUT_POST, 'URL',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_AVI   =  \filter_input(\INPUT_POST, 'AVI',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_PVARP =  \filter_input(\INPUT_POST, 'PVARP',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_ApThr =  \filter_input(\INPUT_POST, 'ApThr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_AsThr =  \filter_input(\INPUT_POST, 'AsThr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_VpThr =  \filter_input(\INPUT_POST, 'VpThr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_VsThr =  \filter_input(\INPUT_POST, 'VsThr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_Ap    =  \filter_input(\INPUT_POST, 'Ap',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_As    =  \filter_input(\INPUT_POST, 'As',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_Vp    =  \filter_input(\INPUT_POST, 'Vp',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_Vs    =  \filter_input(\INPUT_POST, 'Vs',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_notes =  \filter_input(\INPUT_POST, 'notes',FILTER_SANITIZE_SPECIAL_CHARS);
+        
+        $PMtemp = $PMpacing[0]->addChild('leads');
+            $PMtemp[0]->addChild('mode',$pmt_mode);
+            $PMtemp[0]->addChild('LRL',$pmt_LRL);
+            $PMtemp[0]->addChild('URL',$pmt_URL);
+            $PMtemp[0]->addChild('AVI',$pmt_AVI);
+            $PMtemp[0]->addChild('PVARP',$pmt_PVARP);
+            $PMtemp[0]->addChild('ApThr',$pmt_ApThr);
+            $PMtemp[0]->addChild('AsThr',$pmt_AsThr);
+            $PMtemp[0]->addChild('VpThr',$pmt_VpThr);
+            $PMtemp[0]->addChild('VsThr',$pmt_VsThr);
+            $PMtemp[0]->addChild('Ap',$pmt_Ap);
+            $PMtemp[0]->addChild('As',$pmt_As);
+            $PMtemp[0]->addChild('Vp',$pmt_Vp);
+            $PMtemp[0]->addChild('Vs',$pmt_Vs);
+            $PMtemp[0]->addChild('notes',$pmt_notes);
+
     }
 
 function cloneBlob($blob,$type,$change='') {
