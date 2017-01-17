@@ -470,6 +470,10 @@ function dialogConfirm() {
 <div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-mini="true" data-collapsed-icon="carat-r" data-expanded-icon="carat-d">
     <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
         <h3>Pacemaker settings</h3>
+        <p>
+            ED: <?php echo $pmt_ed ?><br>
+            AU: <?php echo $pmt_au ?>
+        </p>
         <a href="#editPM" class="ui-btn ui-mini ui-btn-icon-left ui-icon-edit">Add/Modify settings</a>
     </div>
 </div>
