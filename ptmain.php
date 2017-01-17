@@ -509,9 +509,56 @@ function dialogConfirm() {
     <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
         <h3>Pacemaker settings</h3>
         <p>
-            ED: <?php echo $pmt_ed ?><br>
-            AU: <?php echo $pmt_au ?>
+            <?php
+            echo $pmt_ed.' ['.$pmt_au.']'
+            ?>
         </p>
+        <div class="ui-grid-a">
+            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">TIMING PARAMETERS</div>
+            <div class="ui-block-a">
+                <div class="ui-body"> 
+                <?php
+                    echo 'Mode: '.$pmt_mode.'<br>';
+                    echo 'LRL: '.$pmt_LRL.'<br>';
+                    echo 'URL: '.$pmt_URL.'<br>';
+                ?>
+                </div>
+            </div>
+            <div class="ui-block-b">
+                <div class="ui-body">
+                <?php
+                    echo 'AVI: '.$pmt_AVI.'<br>';
+                    echo 'PVARP: '.$pmt_PVARP.'<br>';
+                ?>
+                </div>
+            </div>
+        </div>
+        <div class="ui-grid-a">
+            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">LEAD PARAMETERS</div>
+            <div class="ui-block-a">
+                <div class="ui-header ">Threshold</div>
+                <div class="ui-body"> 
+                <?php
+                    echo 'Ap: '.$pmt_ApThr.'<br>';
+                    echo 'As: '.$pmt_AsThr.'<br>';
+                    echo 'Vp: '.$pmt_VpThr.'<br>';
+                    echo 'Vs: '.$pmt_VsThr.'<br>';
+                ?>
+                </div>
+            </div>
+            <div class="ui-block-b">
+                <div class="ui-header ">Programmed</div>
+                <div class="ui-body">
+                <?php
+                    echo 'Ap: '.$pmt_Ap.'<br>';
+                    echo 'As: '.$pmt_As.'<br>';
+                    echo 'Vp: '.$pmt_Vp.'<br>';
+                    echo 'Vs: '.$pmt_Vs.'<br>';
+                ?>
+                </div>
+                    
+            </div>
+        </div><!-- /grid-a -->
         <a href="#editPM" class="ui-btn ui-mini ui-btn-icon-left ui-icon-edit">Add/Modify settings</a>
     </div>
 </div>
