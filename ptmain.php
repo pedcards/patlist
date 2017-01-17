@@ -350,7 +350,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $pmt_Vs    =  \filter_input(\INPUT_POST, 'Vs',FILTER_SANITIZE_SPECIAL_CHARS);
         $pmt_notes =  \filter_input(\INPUT_POST, 'notes',FILTER_SANITIZE_SPECIAL_CHARS);
         
-        $PMtemp = $PMpacing[0]->addChild('leads');
+        $PMtemp = $PMpacing[0]->addChild('temp');
             $PMtemp[0]->addChild('mode',$pmt_mode);
             $PMtemp[0]->addChild('LRL',$pmt_LRL);
             $PMtemp[0]->addChild('URL',$pmt_URL);
@@ -365,7 +365,10 @@ $edit = \filter_input(\INPUT_POST, 'edit');
             $PMtemp[0]->addChild('Vp',$pmt_Vp);
             $PMtemp[0]->addChild('Vs',$pmt_Vs);
             $PMtemp[0]->addChild('notes',$pmt_notes);
-
+        $PMtemp['ed'] = $timenow;
+        $PMtemp['au'] = $user;
+        $xml->asXML("currlist.xml");
+        cloneBlob($PMtemp,'pmtemp');
     }
 
 function cloneBlob($blob,$type,$change='') {
