@@ -562,7 +562,7 @@ function dialogConfirm() {
         <?php 
         }
         ?>
-        <a href="#editPM" class="ui-btn ui-mini ui-btn-icon-left ui-icon-edit">Add/Modify settings</a>
+        <a href="#editPMT" class="ui-btn ui-mini ui-btn-icon-left ui-icon-edit">Add/Modify settings</a>
     </div>
     <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
         <h3>Permanent pacemaker <?php echo (is_object($PM)) ? 'settings' : '(NONE)';?></h3>
@@ -813,7 +813,7 @@ function dialogConfirm() {
 
 </div><!-- /edit page -->
 <!-- ======================================================================= -->
-<div data-role="page" id="editPM" data-dom-cache="false">
+<div data-role="page" id="editPMT" data-dom-cache="false">
 <div data-role="header" data-position="fixed">
     <h4 style="white-space: normal; text-align: center" ><?php echo $nameL.', '.$nameF; ?></h4>
     <a href="#" data-ajax="false" data-rel="back" class="ui-btn ui-shadow ui-btn-icon-left ui-corner-all ui-icon-delete ui-btn-icon-notext" >Cancel</a>
@@ -862,6 +862,68 @@ function dialogConfirm() {
         <br>
         <input type="submit" class="ui-btn ui-shadow ui-btn-icon-right ui-corner-all ui-icon-edit" value="SAVE" data-theme="b">
         <input type="hidden" name="edit" value="pm-temp" />
+    </form>
+</div><!-- /content -->
+
+</div><!-- /edit page -->
+<!-- ======================================================================= -->
+<div data-role="page" id="editPM" data-dom-cache="false">
+<div data-role="header" data-position="fixed">
+    <h4 style="white-space: normal; text-align: center" ><?php echo $nameL.', '.$nameF; ?></h4>
+    <a href="#" data-ajax="false" data-rel="back" class="ui-btn ui-shadow ui-btn-icon-left ui-corner-all ui-icon-delete ui-btn-icon-notext" >Cancel</a>
+</div><!-- /header -->
+
+<div data-role="content">
+    <form method="post" action="#">
+        <div class="ui-field-contain">
+            <label for="editModel">Generator model:</label>
+            <textarea name="model" id="editModel"><?php echo $pm_model; ?></textarea>
+            <label for="editAlead">Atrial lead model:</label>
+            <textarea name="Alead" id="editAlead"><?php echo $pm_Alead; ?></textarea>
+            <label for="editVlead">Ventricular lead model:</label>
+            <textarea name="Vlead" id="editVlead"><?php echo $pm_Vlead; ?></textarea>
+        </div>
+        <div class="ui-field-contain">
+            <label for="editMode" class="select">Mode:</label>
+            <select name="mode" id="editMode" data-native-menu="false" data-mini="true">
+                <option>Select</option>
+                <option value="DDD" <?php if ($pm_mode=='DDD') { echo 'selected="selected"';}?> >DDD</option>
+                <option value="VVI" <?php if ($pm_mode=='VVI') { echo 'selected="selected"';}?> >VVI</option>
+                <option value="VOO" <?php if ($pm_mode=='VOO') { echo 'selected="selected"';}?> >VOO</option>
+                <option value="AAI" <?php if ($pm_mode=='AAI') { echo 'selected="selected"';}?> >AAI</option>
+                <option value="AOO" <?php if ($pm_mode=='AOO') { echo 'selected="selected"';}?> >AOO</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div data-role="rangeslider">
+            <label for="editLRL">Lower-Upper Rate Limits:</label>
+            <input name="LRL" id="editLRL" min="30" max="200" <?php echo 'value="'.$pm_LRL.'"'?> type="range">
+            <label for="editURL">Rangeslider:</label>
+            <input name="URL" id="editURL" min="30" max="200" <?php echo 'value="'.$pm_URL.'"'?> type="range">
+        </div>
+        <div>
+            <label for="editAVI">AV delay:</label>
+            <input name="AVI" id="editAVI" min="60" max="240" step="10" <?php echo 'value="'.$pm_AVI.'"'?> data-highlight="true" type="range">
+        </div>
+        <div>
+            <label for="editAVI">PVARP:</label>
+            <input name="AVI" id="editPVARP" min="150" max="300" step="10" <?php echo 'value="'.$pm_PVARP.'"'?> data-highlight="true" type="range">
+        </div>
+        <div data-role="rangeslider">
+            <label for="editApThr">A-pace (threshold-setting):</label>
+            <input name="ApThr" id="editApThr" min="0" max="20" step="0.5" <?php echo 'value="'.$pm_ApThr.'"'?> type="range">
+            <label for="editAp">Rangeslider:</label>
+            <input name="Ap" id="editAp" min="0" max="20" step="0.5" <?php echo 'value="'.$pm_Ap.'"'?> type="range">
+        </div>
+        <div data-role="rangeslider">
+            <label for="editVpThr">V-pace (threshold-setting):</label>
+            <input name="VpThr" id="editVpThr" min="0" max="20" step="0.5" <?php echo 'value="'.$pm_VpThr.'"'?> type="range">
+            <label for="editVp">Rangeslider:</label>
+            <input name="Vp" id="editVp" min="0" max="20" step="0.5" <?php echo 'value="'.$pm_Vp.'"'?> type="range">
+        </div>
+        <br>
+        <input type="submit" class="ui-btn ui-shadow ui-btn-icon-right ui-corner-all ui-icon-edit" value="SAVE" data-theme="b">
+        <input type="hidden" name="edit" value="pm-perm" />
     </form>
 </div><!-- /content -->
 
