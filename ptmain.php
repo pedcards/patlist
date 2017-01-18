@@ -374,7 +374,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
     }
     if ($edit == "pm-perm") {
         $pm_ed    = $timenow;
-        $pmt_au    = $user;
+        $pm_au    = $user;
         $pm_model =  \filter_input(\INPUT_POST, 'model',FILTER_SANITIZE_SPECIAL_CHARS);
         $pm_Alead =  \filter_input(\INPUT_POST, 'Alead',FILTER_SANITIZE_SPECIAL_CHARS);
         $pm_Vlead =  \filter_input(\INPUT_POST, 'Vlead',FILTER_SANITIZE_SPECIAL_CHARS);
