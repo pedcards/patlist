@@ -507,12 +507,12 @@ function dialogConfirm() {
     if ($statusPM) { ?>
 <div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-mini="true" data-collapsed-icon="carat-r" data-expanded-icon="carat-d">
     <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
-        <h3>Pacemaker settings</h3>
-        <p>
-            <?php
-            echo $pmt_ed.' ['.$pmt_au.']'
-            ?>
-        </p>
+        <h3>Temporary pacemaker <?php echo (is_object($PMtemp)) ? 'settings' : '(NONE)';?></h3>
+        <?php
+        if (is_object($PMtemp)) 
+        {
+            echo '<p>'.$pmt_ed.' ['.$pmt_au.'] '.$pmt_notes.'</p>'
+        ?>
         <div class="ui-grid-a">
             <div class="ui-header ui-bar ui-bar-a" style="text-align: center">TIMING PARAMETERS</div>
             <div class="ui-block-a">
@@ -559,6 +559,75 @@ function dialogConfirm() {
                     
             </div>
         </div><!-- /grid-a -->
+        <?php 
+        }
+        ?>
+        <a href="#editPM" class="ui-btn ui-mini ui-btn-icon-left ui-icon-edit">Add/Modify settings</a>
+    </div>
+    <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
+        <h3>Permanent pacemaker <?php echo (is_object($PM)) ? 'settings' : '(NONE)';?></h3>
+        <?php
+        if (is_object($PM)) 
+        {
+            echo '<p>'.$pm_ed.' ['.$pm_au.'] '.$pm_notes.'</p>'
+        ?>
+        <div class="ui-grid-a">
+            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">DEVICE AND LEADS</div>
+            <div class="ui-body"> 
+            <?php
+                echo 'Model: '.$pm_model.'<br>';
+                echo 'Atrial: '.$pm_Alead.'<br>';
+                echo 'Ventricular: '.$pm_Vlead.'<br>';
+            ?>
+            </div>
+            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">TIMING PARAMETERS</div>
+            <div class="ui-block-a">
+                <div class="ui-body"> 
+                <?php
+                    echo 'Mode: '.$pm_mode.'<br>';
+                    echo 'LRL: '.$pm_LRL.'<br>';
+                    echo 'URL: '.$pm_URL.'<br>';
+                ?>
+                </div>
+            </div>
+            <div class="ui-block-b">
+                <div class="ui-body">
+                <?php
+                    echo 'AVI: '.$pm_AVI.'<br>';
+                    echo 'PVARP: '.$pm_PVARP.'<br>';
+                ?>
+                </div>
+            </div>
+        </div>
+        <div class="ui-grid-a">
+            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">LEAD PARAMETERS</div>
+            <div class="ui-block-a">
+                <div class="ui-header ">Threshold</div>
+                <div class="ui-body"> 
+                <?php
+                    echo 'Ap: '.$pm_ApThr.'<br>';
+                    echo 'As: '.$pm_AsThr.'<br>';
+                    echo 'Vp: '.$pm_VpThr.'<br>';
+                    echo 'Vs: '.$pm_VsThr.'<br>';
+                ?>
+                </div>
+            </div>
+            <div class="ui-block-b">
+                <div class="ui-header ">Programmed</div>
+                <div class="ui-body">
+                <?php
+                    echo 'Ap: '.$pm_Ap.'<br>';
+                    echo 'As: '.$pm_As.'<br>';
+                    echo 'Vp: '.$pm_Vp.'<br>';
+                    echo 'Vs: '.$pm_Vs.'<br>';
+                ?>
+                </div>
+                    
+            </div>
+        </div><!-- /grid-a -->
+        <?php 
+        }
+        ?>
         <a href="#editPM" class="ui-btn ui-mini ui-btn-icon-left ui-icon-edit">Add/Modify settings</a>
     </div>
 </div>
