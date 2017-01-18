@@ -54,7 +54,6 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $room = $data[0]->room;
     $status = $id[0]->status;
         $statusCons = (string)$status['cons'];                      // (string)$status->attributes()->cons;
-        $statusTxp = (string)$status['txp'];
         $statusRes = (string)$status['res'];
         $statusScamp = (string)$status['scamp'];
     $info = $id[0]->xpath('info');
@@ -63,17 +62,59 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $code = $info[0]->code;
         $hx = $info[0]->hx;
     $MAR = $id[0]->xpath('MAR');
-    $DX = $id[0]->xpath('diagnoses');
+    $DX = $id[0]->diagnoses;
         $dxNotes = $DX[0]->notes;
         $dxCrd = $DX[0]->card;
         $dxEP = $DX[0]->ep;
         $dxSurg = $DX[0]->surg;
         $dxProb = $DX[0]->prob;
+    $PM = $dxEP[0]->device[0];
+        $pm_ed    = (string)$PM['ed'];
+        $pm_au    = (string)$PM['au'];
+        $pm_model = $PM->model;
+        $pm_Alead = $PM->Alead;
+        $pm_Vlead = $PM->Vlead;
+        $pm_mode  = $PM->mode;
+        $pm_LRL   = $PM->LRL;
+        $pm_URL   = $PM->URL;
+        $pm_AVI   = $PM->AVI;
+        $pm_PVARP = $PM->PVARP;
+        $pm_ApThr = $PM->ApThr;
+        $pm_AsThr = $PM->AsThr;
+        $pm_VpThr = $PM->VpThr;
+        $pm_VsThr = $PM->VsThr;
+        $pm_Ap    = $PM->Ap;
+        $pm_As    = $PM->As;
+        $pm_Vp    = $PM->Vp;
+        $pm_Vs    = $PM->Vs;
+        $pm_notes = $PM->notes;
+    $PMpacing = $id[0]->pacing;
+    $PMtemp = $id[0]->pacing->xpath('temp[last()]')[0];
+        $pmt_ed    = (string)$PMtemp['ed'];
+        $pmt_au    = (string)$PMtemp['au'];
+        $pmt_model = $PMtemp->model;
+        $pmt_mode  = $PMtemp->mode;
+        $pmt_LRL   = $PMtemp->LRL;
+        $pmt_URL   = $PMtemp->URL;
+        $pmt_AVI   = $PMtemp->AVI;
+        $pmt_PVARP = $PMtemp->PVARP;
+        $pmt_ApThr = $PMtemp->ApThr;
+        $pmt_AsThr = $PMtemp->AsThr;
+        $pmt_VpThr = $PMtemp->VpThr;
+        $pmt_VsThr = $PMtemp->VsThr;
+        $pmt_Ap    = $PMtemp->Ap;
+        $pmt_As    = $PMtemp->As;
+        $pmt_Vp    = $PMtemp->Vp;
+        $pmt_Vs    = $PMtemp->Vs;
+        $pmt_notes = $PMtemp->notes;
     $prov = $id[0]->prov;
         $provCard = (string)$prov['provCard'];                                  // synonym for  (string)$prov->attributes()->provCard; 
         $provCSR = (string)$prov['CSR'];
         $provEP = (string)$prov['provEP'];
         $provPCP = (string)$prov['provPCP'];
+        $statusTxp = (string)$prov['txp'];
+        $statusMil = (string)$prov['mil'];
+        $statusPM = (string)$prov['pm'];
 
     if (!($notes = $id[0]->notes)) {                                            // create <notes> node if missing
         $notes = $id[0]->addChild('notes');
@@ -252,11 +293,9 @@ $edit = \filter_input(\INPUT_POST, 'edit');
             $status = $id[0]->addChild('status');
         }
         $statusCons = \filter_input(\INPUT_POST, 'statusCons');
-        $statusTxp = \filter_input(\INPUT_POST, 'statusTxp');
         $statusRes = \filter_input(\INPUT_POST, 'statusRes');
         $statusScamp = \filter_input(\INPUT_POST, 'statusScamp');
         $status['cons']=$statusCons;
-        $status['txp']=$statusTxp;
         $status['res']=$statusRes;
         $status['scamp']=$statusScamp;
 //        Synonyms
@@ -277,6 +316,12 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $prov['provEP'] = $provEP;
         $prov['provPCP'] = $provPCP;
         $prov['CSR'] = $provCSR;
+        $statusTxp = \filter_input(\INPUT_POST, 'statusTxp');
+        $statusMil = \filter_input(\INPUT_POST, 'statusMil');
+        $statusPM = \filter_input(\INPUT_POST, 'statusPM');
+        $prov['txp']=$statusTxp;
+        $prov['mil']=$statusMil;
+        $prov['pm']=$statusPM;
         if (empty($prov)) {
             $prov = $id[0]->addChild('prov');
             $prov->addAttribute("provCard",$provCard);
@@ -288,6 +333,89 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $prov['au'] = $user;
         $xml->asXML("currlist.xml");
         cloneBlob($prov,'prov');
+    }
+    if ($edit == "pm-temp") {
+        $pmt_ed    = $timenow;
+        $pmt_au    = $user;
+        $pmt_mode  =  \filter_input(\INPUT_POST, 'mode',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_LRL   =  \filter_input(\INPUT_POST, 'LRL',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_URL   =  \filter_input(\INPUT_POST, 'URL',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_AVI   =  \filter_input(\INPUT_POST, 'AVI',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_PVARP =  \filter_input(\INPUT_POST, 'PVARP',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_ApThr =  \filter_input(\INPUT_POST, 'ApThr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_AsThr =  \filter_input(\INPUT_POST, 'AsThr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_VpThr =  \filter_input(\INPUT_POST, 'VpThr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_VsThr =  \filter_input(\INPUT_POST, 'VsThr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_Ap    =  \filter_input(\INPUT_POST, 'Ap',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_As    =  \filter_input(\INPUT_POST, 'As',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_Vp    =  \filter_input(\INPUT_POST, 'Vp',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_Vs    =  \filter_input(\INPUT_POST, 'Vs',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pmt_notes =  \filter_input(\INPUT_POST, 'notes',FILTER_SANITIZE_SPECIAL_CHARS);
+        
+        $PMtemp = $PMpacing[0]->addChild('temp');
+            $PMtemp[0]->addChild('mode',$pmt_mode);
+            $PMtemp[0]->addChild('LRL',$pmt_LRL);
+            $PMtemp[0]->addChild('URL',$pmt_URL);
+            $PMtemp[0]->addChild('AVI',$pmt_AVI);
+            $PMtemp[0]->addChild('PVARP',$pmt_PVARP);
+            $PMtemp[0]->addChild('ApThr',$pmt_ApThr);
+            $PMtemp[0]->addChild('AsThr',$pmt_AsThr);
+            $PMtemp[0]->addChild('VpThr',$pmt_VpThr);
+            $PMtemp[0]->addChild('VsThr',$pmt_VsThr);
+            $PMtemp[0]->addChild('Ap',$pmt_Ap);
+            $PMtemp[0]->addChild('As',$pmt_As);
+            $PMtemp[0]->addChild('Vp',$pmt_Vp);
+            $PMtemp[0]->addChild('Vs',$pmt_Vs);
+            $PMtemp[0]->addChild('notes',$pmt_notes);
+        $PMtemp['ed'] = $timenow;
+        $PMtemp['au'] = $user;
+        $xml->asXML("currlist.xml");
+        cloneBlob($PMtemp,'pmtemp','add');
+    }
+    if ($edit == "pm-perm") {
+        $pm_ed    = $timenow;
+        $pm_au    = $user;
+        $pm_model =  \filter_input(\INPUT_POST, 'model',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_Alead =  \filter_input(\INPUT_POST, 'Alead',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_Vlead =  \filter_input(\INPUT_POST, 'Vlead',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_mode  =  \filter_input(\INPUT_POST, 'mode',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_LRL   =  \filter_input(\INPUT_POST, 'LRL',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_URL   =  \filter_input(\INPUT_POST, 'URL',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_AVI   =  \filter_input(\INPUT_POST, 'AVI',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_PVARP =  \filter_input(\INPUT_POST, 'PVARP',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_ApThr =  \filter_input(\INPUT_POST, 'ApThr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_AsThr =  \filter_input(\INPUT_POST, 'AsThr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_VpThr =  \filter_input(\INPUT_POST, 'VpThr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_VsThr =  \filter_input(\INPUT_POST, 'VsThr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_Ap    =  \filter_input(\INPUT_POST, 'Ap',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_As    =  \filter_input(\INPUT_POST, 'As',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_Vp    =  \filter_input(\INPUT_POST, 'Vp',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_Vs    =  \filter_input(\INPUT_POST, 'Vs',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pm_notes =  \filter_input(\INPUT_POST, 'notes',FILTER_SANITIZE_SPECIAL_CHARS);
+        
+        unset($PM[0]);
+        $PM = $dxEP[0]->addChild('device');
+            $PM[0]->addChild('model',$pm_model);
+            $PM[0]->addChild('Alead',$pm_Alead);
+            $PM[0]->addChild('Vlead',$pm_Vlead);
+            $PM[0]->addChild('mode',$pm_mode);
+            $PM[0]->addChild('LRL',$pm_LRL);
+            $PM[0]->addChild('URL',$pm_URL);
+            $PM[0]->addChild('AVI',$pm_AVI);
+            $PM[0]->addChild('PVARP',$pm_PVARP);
+            $PM[0]->addChild('ApThr',$pm_ApThr);
+            $PM[0]->addChild('AsThr',$pm_AsThr);
+            $PM[0]->addChild('VpThr',$pm_VpThr);
+            $PM[0]->addChild('VsThr',$pm_VsThr);
+            $PM[0]->addChild('Ap',$pm_Ap);
+            $PM[0]->addChild('As',$pm_As);
+            $PM[0]->addChild('Vp',$pm_Vp);
+            $PM[0]->addChild('Vs',$pm_Vs);
+            $PM[0]->addChild('notes',$pm_notes);
+        $PM['ed'] = $timenow;
+        $PM['au'] = $user;
+        $xml->asXML("currlist.xml");
+        cloneBlob($PM,'pmperm','edit');
     }
 
 function cloneBlob($blob,$type,$change='') {
@@ -402,17 +530,156 @@ function dialogConfirm() {
     <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" class="ui-field-contain">
         <input name="statusCons" id="cbox-1a" type="checkbox" <?php if ($statusCons) { echo 'checked="checked"'; } ?> onChange="submit();">
         <label for="cbox-1a">Cons</label>
-        <input name="statusTxp" id="cbox-1b" type="checkbox" <?php if ($statusTxp) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-1b">Txp</label>
-        <input name="statusRes" id="cbox-1c" type="checkbox" <?php if ($statusRes) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-1c">Res</label>
-        <input name="statusScamp" id="cbox-1d" type="checkbox" <?php if ($statusScamp) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-1d">SCAMP</label>
+        <input name="statusRes" id="cbox-1b" type="checkbox" <?php if ($statusRes) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-1b">Res</label>
+        <input name="statusScamp" id="cbox-1c" type="checkbox" <?php if ($statusScamp) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-1c">SCAMP</label>
         <!--<input data-icon="camera" data-iconpos="notext" data-corners="false" value="Icon only" type="submit" >-->
     </fieldset>
     <input type="hidden" name="edit" value="status" />
 </form>
-    
+<form method="post" <?php echo 'action="ptmain.php?id='.$mrn.'"'; ?>>
+    <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" class="ui-field-contain">
+        <input name="statusTxp" id="cbox-2a" type="checkbox" <?php if ($statusTxp) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-2a">Txp</label>
+        <input name="statusMil" id="cbox-2b" type="checkbox" <?php if ($statusMil) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-2b">Mil</label>
+        <input name="statusPM" id="cbox-2c" type="checkbox" <?php if ($statusPM) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-2c">PM</label>
+        <!--<input data-icon="camera" data-iconpos="notext" data-corners="false" value="Icon only" type="submit" >-->
+    </fieldset>
+    <input type="hidden" name="edit" value="provider" />
+</form>
+<?php
+    if ($statusPM) { ?>
+<div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-mini="true" data-collapsed-icon="carat-r" data-expanded-icon="carat-d">
+    <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
+        <h3>Temporary pacemaker <?php echo (is_object($PMtemp)) ? 'settings' : '(NONE)';?></h3>
+        <?php
+        if (is_object($PMtemp)) 
+        {
+            echo '<p>'.$pmt_ed.' ['.$pmt_au.'] '.$pmt_notes.'</p>'
+        ?>
+        <div class="ui-grid-a">
+            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">TIMING PARAMETERS</div>
+            <div class="ui-block-a">
+                <div class="ui-body"> 
+                <?php
+                    echo 'Mode: '.$pmt_mode.'<br>';
+                    echo 'LRL: '.$pmt_LRL.'<br>';
+                    echo 'URL: '.$pmt_URL.'<br>';
+                ?>
+                </div>
+            </div>
+            <div class="ui-block-b">
+                <div class="ui-body">
+                <?php
+                    echo 'AVI: '.$pmt_AVI.'<br>';
+                    echo 'PVARP: '.$pmt_PVARP.'<br>';
+                ?>
+                </div>
+            </div>
+        </div>
+        <div class="ui-grid-a">
+            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">LEAD PARAMETERS</div>
+            <div class="ui-block-a">
+                <div class="ui-header ">Threshold</div>
+                <div class="ui-body"> 
+                <?php
+                    echo 'Ap: '.$pmt_ApThr.'<br>';
+                    echo 'As: '.$pmt_AsThr.'<br>';
+                    echo 'Vp: '.$pmt_VpThr.'<br>';
+                    echo 'Vs: '.$pmt_VsThr.'<br>';
+                ?>
+                </div>
+            </div>
+            <div class="ui-block-b">
+                <div class="ui-header ">Programmed</div>
+                <div class="ui-body">
+                <?php
+                    echo 'Ap: '.$pmt_Ap.'<br>';
+                    echo 'As: '.$pmt_As.'<br>';
+                    echo 'Vp: '.$pmt_Vp.'<br>';
+                    echo 'Vs: '.$pmt_Vs.'<br>';
+                ?>
+                </div>
+                    
+            </div>
+        </div><!-- /grid-a -->
+        <?php 
+        }
+        ?>
+        <a href="#editPMT" class="ui-btn ui-mini ui-btn-icon-left ui-icon-edit">Add/Modify settings</a>
+    </div>
+    <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
+        <h3>Permanent pacemaker <?php echo (is_object($PM)) ? 'settings' : '(NONE)';?></h3>
+        <?php
+        if (is_object($PM)) 
+        {
+            echo '<p>'.$pm_ed.' ['.$pm_au.'] '.$pm_notes.'</p>'
+        ?>
+        <div class="ui-grid-a">
+            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">DEVICE AND LEADS</div>
+            <div class="ui-body"> 
+            <?php
+                echo 'Model: '.$pm_model.'<br>';
+                echo 'Atrial: '.$pm_Alead.'<br>';
+                echo 'Ventricular: '.$pm_Vlead.'<br>';
+            ?>
+            </div>
+            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">TIMING PARAMETERS</div>
+            <div class="ui-block-a">
+                <div class="ui-body"> 
+                <?php
+                    echo 'Mode: '.$pm_mode.'<br>';
+                    echo 'LRL: '.$pm_LRL.'<br>';
+                    echo 'URL: '.$pm_URL.'<br>';
+                ?>
+                </div>
+            </div>
+            <div class="ui-block-b">
+                <div class="ui-body">
+                <?php
+                    echo 'AVI: '.$pm_AVI.'<br>';
+                    echo 'PVARP: '.$pm_PVARP.'<br>';
+                ?>
+                </div>
+            </div>
+        </div>
+        <div class="ui-grid-a">
+            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">LEAD PARAMETERS</div>
+            <div class="ui-block-a">
+                <div class="ui-header ">Threshold</div>
+                <div class="ui-body"> 
+                <?php
+                    echo 'Ap: '.$pm_ApThr.'<br>';
+                    echo 'As: '.$pm_AsThr.'<br>';
+                    echo 'Vp: '.$pm_VpThr.'<br>';
+                    echo 'Vs: '.$pm_VsThr.'<br>';
+                ?>
+                </div>
+            </div>
+            <div class="ui-block-b">
+                <div class="ui-header ">Programmed</div>
+                <div class="ui-body">
+                <?php
+                    echo 'Ap: '.$pm_Ap.'<br>';
+                    echo 'As: '.$pm_As.'<br>';
+                    echo 'Vp: '.$pm_Vp.'<br>';
+                    echo 'Vs: '.$pm_Vs.'<br>';
+                ?>
+                </div>
+                    
+            </div>
+        </div><!-- /grid-a -->
+        <?php 
+        }
+        ?>
+        <a href="#editPM" class="ui-btn ui-mini ui-btn-icon-left ui-icon-edit">Add/Modify settings</a>
+    </div>
+</div>
+    <?php } ?>
+
 <div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-mini="true" data-collapsed-icon="carat-r" data-expanded-icon="carat-d">
     <div data-role="collapsible" data-content-theme="a" <?php if (empty($openme)) {echo 'data-collapsed="false"';}?>>
         <h3>Diagnoses</h3>
@@ -589,6 +856,122 @@ function dialogConfirm() {
     <input type="submit" class="ui-btn ui-shadow ui-btn-icon-right ui-corner-all ui-icon-edit" value="SAVE" data-theme="b">
     <input type="hidden" name="edit" value="dx" />
 </form>
+</div><!-- /content -->
+
+</div><!-- /edit page -->
+<!-- ======================================================================= -->
+<div data-role="page" id="editPMT" data-dom-cache="false">
+<div data-role="header" data-position="fixed">
+    <h4 style="white-space: normal; text-align: center" ><?php echo $nameL.', '.$nameF; ?></h4>
+    <a href="#" data-ajax="false" data-rel="back" class="ui-btn ui-shadow ui-btn-icon-left ui-corner-all ui-icon-delete ui-btn-icon-notext" >Cancel</a>
+</div><!-- /header -->
+
+<div data-role="content">
+    <form method="post" action="#">
+        <div class="ui-field-contain">
+            <label for="editMode" class="select">Mode:</label>
+            <select name="mode" id="editMode" data-native-menu="false" data-mini="true">
+                <option>Select</option>
+                <option value="DDD" <?php if ($pmt_mode=='DDD') { echo 'selected="selected"';}?> >DDD</option>
+                <option value="VVI" <?php if ($pmt_mode=='VVI') { echo 'selected="selected"';}?> >VVI</option>
+                <option value="VOO" <?php if ($pmt_mode=='VOO') { echo 'selected="selected"';}?> >VOO</option>
+                <option value="AAI" <?php if ($pmt_mode=='AAI') { echo 'selected="selected"';}?> >AAI</option>
+                <option value="AOO" <?php if ($pmt_mode=='AOO') { echo 'selected="selected"';}?> >AOO</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div data-role="rangeslider">
+            <label for="editLRL">Lower-Upper Rate Limits:</label>
+            <input name="LRL" id="editLRL" min="30" max="200" <?php echo 'value="'.$pmt_LRL.'"'?> type="range">
+            <label for="editURL">Rangeslider:</label>
+            <input name="URL" id="editURL" min="30" max="200" <?php echo 'value="'.$pmt_URL.'"'?> type="range">
+        </div>
+        <div>
+            <label for="editAVI">AV delay:</label>
+            <input name="AVI" id="editAVI" min="60" max="240" step="10" <?php echo 'value="'.$pmt_AVI.'"'?> data-highlight="true" type="range">
+        </div>
+        <div>
+            <label for="editAVI">PVARP:</label>
+            <input name="AVI" id="editPVARP" min="150" max="300" step="10" <?php echo 'value="'.$pmt_PVARP.'"'?> data-highlight="true" type="range">
+        </div>
+        <div data-role="rangeslider">
+            <label for="editApThr">A-pace (threshold-setting):</label>
+            <input name="ApThr" id="editApThr" min="0" max="20" step="0.5" <?php echo 'value="'.$pmt_ApThr.'"'?> type="range">
+            <label for="editAp">Rangeslider:</label>
+            <input name="Ap" id="editAp" min="0" max="20" step="0.5" <?php echo 'value="'.$pmt_Ap.'"'?> type="range">
+        </div>
+        <div data-role="rangeslider">
+            <label for="editVpThr">V-pace (threshold-setting):</label>
+            <input name="VpThr" id="editVpThr" min="0" max="20" step="0.5" <?php echo 'value="'.$pmt_VpThr.'"'?> type="range">
+            <label for="editVp">Rangeslider:</label>
+            <input name="Vp" id="editVp" min="0" max="20" step="0.5" <?php echo 'value="'.$pmt_Vp.'"'?> type="range">
+        </div>
+        <br>
+        <input type="submit" class="ui-btn ui-shadow ui-btn-icon-right ui-corner-all ui-icon-edit" value="SAVE" data-theme="b">
+        <input type="hidden" name="edit" value="pm-temp" />
+    </form>
+</div><!-- /content -->
+
+</div><!-- /edit page -->
+<!-- ======================================================================= -->
+<div data-role="page" id="editPM" data-dom-cache="false">
+<div data-role="header" data-position="fixed">
+    <h4 style="white-space: normal; text-align: center" ><?php echo $nameL.', '.$nameF; ?></h4>
+    <a href="#" data-ajax="false" data-rel="back" class="ui-btn ui-shadow ui-btn-icon-left ui-corner-all ui-icon-delete ui-btn-icon-notext" >Cancel</a>
+</div><!-- /header -->
+
+<div data-role="content">
+    <form method="post" action="#">
+        <div class="ui-field-contain">
+            <label for="editModel">Generator model:</label>
+            <textarea name="model" id="editModel"><?php echo $pm_model; ?></textarea>
+            <label for="editAlead">Atrial lead model:</label>
+            <textarea name="Alead" id="editAlead"><?php echo $pm_Alead; ?></textarea>
+            <label for="editVlead">Ventricular lead model:</label>
+            <textarea name="Vlead" id="editVlead"><?php echo $pm_Vlead; ?></textarea>
+        </div>
+        <div class="ui-field-contain">
+            <label for="editMode" class="select">Mode:</label>
+            <select name="mode" id="editMode" data-native-menu="false" data-mini="true">
+                <option>Select</option>
+                <option value="DDD" <?php if ($pm_mode=='DDD') { echo 'selected="selected"';}?> >DDD</option>
+                <option value="VVI" <?php if ($pm_mode=='VVI') { echo 'selected="selected"';}?> >VVI</option>
+                <option value="VOO" <?php if ($pm_mode=='VOO') { echo 'selected="selected"';}?> >VOO</option>
+                <option value="AAI" <?php if ($pm_mode=='AAI') { echo 'selected="selected"';}?> >AAI</option>
+                <option value="AOO" <?php if ($pm_mode=='AOO') { echo 'selected="selected"';}?> >AOO</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div data-role="rangeslider">
+            <label for="editLRL">Lower-Upper Rate Limits:</label>
+            <input name="LRL" id="editLRL" min="30" max="200" <?php echo 'value="'.$pm_LRL.'"'?> type="range">
+            <label for="editURL">Rangeslider:</label>
+            <input name="URL" id="editURL" min="30" max="200" <?php echo 'value="'.$pm_URL.'"'?> type="range">
+        </div>
+        <div>
+            <label for="editAVI">AV delay:</label>
+            <input name="AVI" id="editAVI" min="60" max="240" step="10" <?php echo 'value="'.$pm_AVI.'"'?> data-highlight="true" type="range">
+        </div>
+        <div>
+            <label for="editAVI">PVARP:</label>
+            <input name="AVI" id="editPVARP" min="150" max="300" step="10" <?php echo 'value="'.$pm_PVARP.'"'?> data-highlight="true" type="range">
+        </div>
+        <div data-role="rangeslider">
+            <label for="editApThr">A-pace (threshold-setting):</label>
+            <input name="ApThr" id="editApThr" min="0" max="20" step="0.5" <?php echo 'value="'.$pm_ApThr.'"'?> type="range">
+            <label for="editAp">Rangeslider:</label>
+            <input name="Ap" id="editAp" min="0" max="20" step="0.5" <?php echo 'value="'.$pm_Ap.'"'?> type="range">
+        </div>
+        <div data-role="rangeslider">
+            <label for="editVpThr">V-pace (threshold-setting):</label>
+            <input name="VpThr" id="editVpThr" min="0" max="20" step="0.5" <?php echo 'value="'.$pm_VpThr.'"'?> type="range">
+            <label for="editVp">Rangeslider:</label>
+            <input name="Vp" id="editVp" min="0" max="20" step="0.5" <?php echo 'value="'.$pm_Vp.'"'?> type="range">
+        </div>
+        <br>
+        <input type="submit" class="ui-btn ui-shadow ui-btn-icon-right ui-corner-all ui-icon-edit" value="SAVE" data-theme="b">
+        <input type="hidden" name="edit" value="pm-perm" />
+    </form>
 </div><!-- /content -->
 
 </div><!-- /edit page -->
