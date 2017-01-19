@@ -410,7 +410,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $PM['ed'] = $timenow;
         $PM['au'] = $user;
         $xml->asXML("currlist.xml");
-        cloneBlob($PM,'pmperm','edit');
+        cloneBlob($PM,'pmperm','mod');
     }
 
 function cloneBlob($blob,$type,$change='') {
