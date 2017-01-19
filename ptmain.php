@@ -68,7 +68,7 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $dxEP = $DX[0]->ep;
         $dxSurg = $DX[0]->surg;
         $dxProb = $DX[0]->prob;
-    $PM = $dxEP[0]->device[0];
+    $PM = $DX[0]->device[0];
         $pm_ed    = (string)$PM['ed'];
         $pm_au    = (string)$PM['au'];
         $pm_model = $PM->model;
@@ -389,7 +389,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $pm_notes =  \filter_input(\INPUT_POST, 'notes',FILTER_SANITIZE_SPECIAL_CHARS);
         
         unset($PM[0]);
-        $PM = $dxEP[0]->addChild('device');
+        $PM = $DX[0]->addChild('device');
             $PM[0]->addChild('model',$pm_model);
             $PM[0]->addChild('Alead',$pm_Alead);
             $PM[0]->addChild('Vlead',$pm_Vlead);
