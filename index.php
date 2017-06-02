@@ -54,6 +54,7 @@ function makedate($a) {
         <li><a href="?list=CSR">Cardiac Surgery</a></li>
         <li><a href="?list=TXP">Transplant</a></li>
         <li><a href="?list=PHTN">Pulm HTN</a></li>
+        <li><a href="?list=Coord">Coordination</a></li>
         <li><a href="index.php">All CORES</a></li>
     </ul>
 </div>
