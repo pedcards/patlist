@@ -227,9 +227,8 @@ function dialogConfirm() {
         <label for="cbox-1b">Pillow given</label>
         <input name="statusTour" id="cbox-1c" type="checkbox" <?php if ($statusTour) { echo 'checked="checked"'; } ?> onChange="submit();">
         <label for="cbox-1c">Tour given</label>
-        <input name="statusMFM" id="cbox-2a" type="checkbox" <?php if ($statusMFM) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-2a">MFM notified</label>
-        <!--<input data-icon="camera" data-iconpos="notext" data-corners="false" value="Icon only" type="submit" >-->
+        <input name="statusMFM" id="cbox-1d" type="checkbox" <?php if ($statusMFM) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-1d">MFM notified</label>
     </fieldset>
     <input type="hidden" name="edit" value="status" />
 </form>
