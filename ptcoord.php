@@ -76,130 +76,31 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
 
 $edit = \filter_input(\INPUT_POST, 'edit');
     if ($edit == "dx") {
-        $dxNotes =  \filter_input(\INPUT_POST, 'dxNotes00', FILTER_SANITIZE_SPECIAL_CHARS);
-        $dxCrd =  \filter_input(\INPUT_POST, 'dxCrd00', FILTER_SANITIZE_SPECIAL_CHARS);
-        $dxEP =   \filter_input(\INPUT_POST, 'dxEP00', FILTER_SANITIZE_SPECIAL_CHARS);
-        $dxSurg = \filter_input(\INPUT_POST, 'dxSurg00', FILTER_SANITIZE_SPECIAL_CHARS);
-        $dxProb = \filter_input(\INPUT_POST, 'dxProb00', FILTER_SANITIZE_SPECIAL_CHARS);
-        $DX[0]->notes = $dxNotes;
-        $DX[0]->card = $dxCrd;
-        $DX[0]->ep = $dxEP;
-        $DX[0]->surg = $dxSurg;
-        $DX[0]->prob = $dxProb;
+        $dxMisc = \filter_input(\INPUT_POST, 'dxMisc00', FILTER_SANITIZE_SPECIAL_CHARS);
+        $DX[0]->misc = $dxMisc;
         $DX['ed'] = $timenow;                       //$DX->addAttribute("date","now");
         $DX['au'] = $user;
         $xml->asXML("currlist.xml");
         cloneBlob($DX, 'dx', 'change');
         //$openme = 'DX';
     }
-    if ($edit == "wksumm") {
-        $editdate = \filter_input(\INPUT_POST, 'editdate');
-        $editval = \filter_input(\INPUT_POST, 'wkSumm',FILTER_SANITIZE_SPECIAL_CHARS);
-        $editmod = \filter_input(\INPUT_POST, 'mod');
-        $editact = \filter_input(\INPUT_POST, 'action');
-        $editidx = \filter_input(\INPUT_POST, 'idxdate');
-        if (empty($notesWk)) {
-            $notesWk = $notes->addChild('weekly');
-        }
-        if ($editmod) {
-            //change the value
-            $notesTmp = $notesWk->xpath("summary[@created='".$editidx."']");
-            if ($editact=='DELETE') {
-                $confirm = dialogConfirm();
-                if ($confirm=='Y') {
-                    if (empty($trash)) {
-                        $id[0]->addChild('trash');
-                    }
-                    $trash = $id[0]->trash;
-                    $notesTmp[0][0]['del'] = $timenow;
-                    cloneBlob($notesTmp[0],'summary','del');
-                    
-                    $dom_wk = dom_import_simplexml($notesWk[0]);
-                    $dom_summ = dom_import_simplexml($notesTmp[0]);
-                    $dom_trash = dom_import_simplexml($trash[0]);
-                    $dom_new = $dom_trash->appendChild($dom_summ->cloneNode(true));
-                    $new_node = simplexml_import_dom($dom_new);
-                    unset($notesTmp[0][0]);
-                }
-            } else {
-                $notesTmp[0][0] = $editval;
-                $notesTmp[0][0]['ed'] = $timenow;
-                $notesTmp[0][0]['au'] = $user;
-                cloneBlob($notesTmp[0],'summary','edit');
-            }
-        } else {
-            //add a note
-            $summ = $notesWk->addChild('summary', $editval);
-            $summ->addAttribute('date', $editdate);
-            $summ->addAttribute('created', $editdate);
-            $summ->addAttribute('ed',$timenow);
-            $summ->addAttribute('au', $user);
-            cloneBlob($summ,'summary','add');
-        }
+    if ($edit == "note") {
+        $dxNote = \filter_input(\INPUT_POST, 'dxNote00', FILTER_SANITIZE_SPECIAL_CHARS);
+        $DXcoord[0]->note = $dxNote;
+        $DXcoord['ed'] = $timenow;                       //$DX->addAttribute("date","now");
+        $DXcoord['au'] = $user;
         $xml->asXML("currlist.xml");
-        $openme = 'WK';
-    }
-    if ($edit == "todo") {
-        $editdate = \filter_input(\INPUT_POST, 'duedate');
-        $editval = \filter_input(\INPUT_POST, 'taskTodo',FILTER_SANITIZE_SPECIAL_CHARS);
-        $editmod = \filter_input(\INPUT_POST, 'mod');
-        $editact = \filter_input(\INPUT_POST, 'action');
-        $editidx = \filter_input(\INPUT_POST, 'idxdate');
-        if (substr($editdate,2,1)=="/") {
-            $editdate = substr($editdate,6,4).substr($editdate,0,2).substr($editdate,3,2);
-        }
-        if (empty($planTasks)) {
-            $planTasks = $plan->addChild('tasks');
-        }
-        if ($editmod) {
-            //change the value
-            $todoTmp = $planTasks->xpath("todo[@created='".$editidx."']");
-            if ($editact=='DELETE') {
-                $confirm = dialogConfirm();
-                if ($confirm=='Y') {
-                    if (empty($trash)) {
-                        $id[0]->addChild('trash');
-                    }
-                    $trash = $id[0]->trash;
-                    $todoTmp[0][0]['del'] = $timenow;
-                    cloneBlob($todoTmp[0],'todo','del');
-                    
-                    $dom_task = dom_import_simplexml($planTasks[0]);
-                    $dom_todo = dom_import_simplexml($todoTmp[0]);
-                    $dom_trash = dom_import_simplexml($trash[0]);
-                    $dom_new = $dom_trash->appendChild($dom_todo->cloneNode(true));
-                    $new_node = simplexml_import_dom($dom_new);
-                    unset($todoTmp[0][0]);
-                }
-            } else {
-                $todoTmp[0][0] = $editval;
-                $todoTmp[0][0]['due'] = $editdate;
-                $todoTmp[0][0]['ed'] = $timenow;
-                $todoTmp[0][0]['au'] = $user;
-                cloneBlob($todoTmp[0],'todo','edit');
-            }
-        } else {
-            //add a note
-            $todo = $planTasks->addChild('todo', $editval);
-            $todo->addAttribute('due', $editdate);
-            $todo->addAttribute('created', $timenow);
-            $todo->addAttribute('ed',$timenow);
-            $todo->addAttribute('au', $user);
-            cloneBlob($todo,'todo','add');
-        }
-        $xml->asXML("currlist.xml");
-        $openme = 'TD';
+        cloneBlob($DXcoord, 'note', 'change');
     }
     if ($edit == "status") {
-        if (empty($status)) {
-            $status = $id[0]->addChild('status');
-        }
-        $statusCons = \filter_input(\INPUT_POST, 'statusCons');
-        $statusRes = \filter_input(\INPUT_POST, 'statusRes');
-        $statusScamp = \filter_input(\INPUT_POST, 'statusScamp');
-        $status['cons']=$statusCons;
-        $status['res']=$statusRes;
-        $status['scamp']=$statusScamp;
+        $statusBag = \filter_input(\INPUT_POST, 'statusBag');
+        $statusPillow = \filter_input(\INPUT_POST, 'statusPillow');
+        $statusTour = \filter_input(\INPUT_POST, 'statusTour');
+        $statusMFM = \filter_input(\INPUT_POST, 'statusMFM');
+        $status['bag']=$statusBag;
+        $status['pillow']=$statusPillow;
+        $status['tour']=$statusTour;
+        $status['mfm']=$statusMFM;
 //        Synonyms
 //        $status->attributes()->cons = $statusCons;
 //        $status->addAttribute("cons",$statusCons);
@@ -207,7 +108,7 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $status['ed']=$timenow;
         $status['au']=$user;
         $xml->asXML("currlist.xml");
-        cloneBlob($status,'stat');
+        cloneBlob($status,'statCo', 'change');
     }
     if ($edit == "provider") {
         $provCard = \filter_input(\INPUT_POST, 'provCard',FILTER_SANITIZE_SPECIAL_CHARS);
@@ -218,12 +119,6 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $prov['provEP'] = $provEP;
         $prov['provPCP'] = $provPCP;
         $prov['CSR'] = $provCSR;
-        $statusTxp = \filter_input(\INPUT_POST, 'statusTxp');
-        $statusMil = \filter_input(\INPUT_POST, 'statusMil');
-        $statusPM = \filter_input(\INPUT_POST, 'statusPM');
-        $prov['txp']=$statusTxp;
-        $prov['mil']=$statusMil;
-        $prov['pm']=$statusPM;
         if (empty($prov)) {
             $prov = $id[0]->addChild('prov');
             $prov->addAttribute("provCard",$provCard);
@@ -235,89 +130,6 @@ $edit = \filter_input(\INPUT_POST, 'edit');
         $prov['au'] = $user;
         $xml->asXML("currlist.xml");
         cloneBlob($prov,'prov');
-    }
-    if ($edit == "pm-temp") {
-        $pmt_ed    = $timenow;
-        $pmt_au    = $user;
-        $pmt_mode  =  \filter_input(\INPUT_POST, 'mode',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_LRL   =  \filter_input(\INPUT_POST, 'LRL',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_URL   =  \filter_input(\INPUT_POST, 'URL',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_AVI   =  \filter_input(\INPUT_POST, 'AVI',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_PVARP =  \filter_input(\INPUT_POST, 'PVARP',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_ApThr =  \filter_input(\INPUT_POST, 'ApThr',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_AsThr =  \filter_input(\INPUT_POST, 'AsThr',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_VpThr =  \filter_input(\INPUT_POST, 'VpThr',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_VsThr =  \filter_input(\INPUT_POST, 'VsThr',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_Ap    =  \filter_input(\INPUT_POST, 'Ap',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_As    =  \filter_input(\INPUT_POST, 'As',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_Vp    =  \filter_input(\INPUT_POST, 'Vp',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_Vs    =  \filter_input(\INPUT_POST, 'Vs',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pmt_notes =  \filter_input(\INPUT_POST, 'notes',FILTER_SANITIZE_SPECIAL_CHARS);
-        
-        $PMtemp = $PMpacing[0]->addChild('temp');
-            $PMtemp[0]->addChild('mode',$pmt_mode);
-            $PMtemp[0]->addChild('LRL',$pmt_LRL);
-            $PMtemp[0]->addChild('URL',$pmt_URL);
-            $PMtemp[0]->addChild('AVI',$pmt_AVI);
-            $PMtemp[0]->addChild('PVARP',$pmt_PVARP);
-            $PMtemp[0]->addChild('ApThr',$pmt_ApThr);
-            $PMtemp[0]->addChild('AsThr',$pmt_AsThr);
-            $PMtemp[0]->addChild('VpThr',$pmt_VpThr);
-            $PMtemp[0]->addChild('VsThr',$pmt_VsThr);
-            $PMtemp[0]->addChild('Ap',$pmt_Ap);
-            $PMtemp[0]->addChild('As',$pmt_As);
-            $PMtemp[0]->addChild('Vp',$pmt_Vp);
-            $PMtemp[0]->addChild('Vs',$pmt_Vs);
-            $PMtemp[0]->addChild('notes',$pmt_notes);
-        $PMtemp['ed'] = $timenow;
-        $PMtemp['au'] = $user;
-        $xml->asXML("currlist.xml");
-        cloneBlob($PMtemp,'pmtemp','add');
-    }
-    if ($edit == "pm-perm") {
-        $pm_ed    = $timenow;
-        $pm_au    = $user;
-        $pm_model =  \filter_input(\INPUT_POST, 'model',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_Alead =  \filter_input(\INPUT_POST, 'Alead',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_Vlead =  \filter_input(\INPUT_POST, 'Vlead',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_mode  =  \filter_input(\INPUT_POST, 'mode',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_LRL   =  \filter_input(\INPUT_POST, 'LRL',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_URL   =  \filter_input(\INPUT_POST, 'URL',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_AVI   =  \filter_input(\INPUT_POST, 'AVI',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_PVARP =  \filter_input(\INPUT_POST, 'PVARP',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_ApThr =  \filter_input(\INPUT_POST, 'ApThr',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_AsThr =  \filter_input(\INPUT_POST, 'AsThr',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_VpThr =  \filter_input(\INPUT_POST, 'VpThr',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_VsThr =  \filter_input(\INPUT_POST, 'VsThr',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_Ap    =  \filter_input(\INPUT_POST, 'Ap',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_As    =  \filter_input(\INPUT_POST, 'As',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_Vp    =  \filter_input(\INPUT_POST, 'Vp',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_Vs    =  \filter_input(\INPUT_POST, 'Vs',FILTER_SANITIZE_SPECIAL_CHARS);
-        $pm_notes =  \filter_input(\INPUT_POST, 'notes',FILTER_SANITIZE_SPECIAL_CHARS);
-        
-        unset($PM[0]);
-        $PM = $DX[0]->addChild('device');
-            $PM[0]->addChild('model',$pm_model);
-            $PM[0]->addChild('Alead',$pm_Alead);
-            $PM[0]->addChild('Vlead',$pm_Vlead);
-            $PM[0]->addChild('mode',$pm_mode);
-            $PM[0]->addChild('LRL',$pm_LRL);
-            $PM[0]->addChild('URL',$pm_URL);
-            $PM[0]->addChild('AVI',$pm_AVI);
-            $PM[0]->addChild('PVARP',$pm_PVARP);
-            $PM[0]->addChild('ApThr',$pm_ApThr);
-            $PM[0]->addChild('AsThr',$pm_AsThr);
-            $PM[0]->addChild('VpThr',$pm_VpThr);
-            $PM[0]->addChild('VsThr',$pm_VsThr);
-            $PM[0]->addChild('Ap',$pm_Ap);
-            $PM[0]->addChild('As',$pm_As);
-            $PM[0]->addChild('Vp',$pm_Vp);
-            $PM[0]->addChild('Vs',$pm_Vs);
-            $PM[0]->addChild('notes',$pm_notes);
-        $PM['ed'] = $timenow;
-        $PM['au'] = $user;
-        $xml->asXML("currlist.xml");
-        cloneBlob($PM,'pmperm','mod');
     }
 
 function cloneBlob($blob,$type,$change='') {
@@ -338,20 +150,6 @@ function makedate($a) {
         $b = substr($a,4,2).'/'.substr($a,6,2).'@'.substr($a,8,2).':'.substr($a,10,2);
     }
     return $b;
-}
-
-function medlist($a,$b,$c) {
-    $medlist = $b[0]->$a;
-    foreach($medlist as $med) {
-        if ($c) {
-            $medatt = $med->attributes();
-            if (strcmp($c,$medatt) == 0) {
-                echo "&#8226;&nbsp;<small>".$med."</small><br/>";
-            }
-        } else {
-        echo "&#8226;&nbsp;<small>".$med."</small><br/>";
-        }
-    }
 }
 
 function dialogConfirm() {
