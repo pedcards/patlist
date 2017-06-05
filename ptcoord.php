@@ -53,6 +53,7 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $unit = $data[0]->unit;
         $room = $data[0]->room;
     $DX = $id[0]->diagnoses;
+    $dxMisc = $DX[0]->misc;
     $DXcoord = $DX[0]->coord;
     $status = $DXcoord[0]->status;
         $statusBag = (string)$status['bag'];                      // (string)$status->attributes()->cons;
@@ -75,22 +76,16 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $statusPM = (string)$prov['pm'];
 
 $edit = \filter_input(\INPUT_POST, 'edit');
-    if ($edit == "dx") {
+    if ($edit == "note") {
         $dxMisc = \filter_input(\INPUT_POST, 'dxMisc00', FILTER_SANITIZE_SPECIAL_CHARS);
+        $dxNote = \filter_input(\INPUT_POST, 'dxNote00', FILTER_SANITIZE_SPECIAL_CHARS);
         $DX[0]->misc = $dxMisc;
+        $DXcoord[0]->note = $dxNote;
         $DX['ed'] = $timenow;                       //$DX->addAttribute("date","now");
         $DX['au'] = $user;
         $xml->asXML("currlist.xml");
-        cloneBlob($DX, 'dx', 'change');
-        //$openme = 'DX';
-    }
-    if ($edit == "note") {
-        $dxNote = \filter_input(\INPUT_POST, 'dxNote00', FILTER_SANITIZE_SPECIAL_CHARS);
-        $DXcoord[0]->note = $dxNote;
-        $DXcoord['ed'] = $timenow;                       //$DX->addAttribute("date","now");
-        $DXcoord['au'] = $user;
-        $xml->asXML("currlist.xml");
-        cloneBlob($DXcoord, 'note', 'change');
+        cloneBlob($DX[0]->misc, 'dxmisc', 'change');
+        cloneBlob($DXcoord[0]->note, 'dxnote', 'change');
     }
     if ($edit == "status") {
         $statusBag = \filter_input(\INPUT_POST, 'statusBag');
@@ -262,7 +257,7 @@ function dialogConfirm() {
     <label for="textarea-dxNote">Special Notes (only seen by Coordinator):</label>
     <textarea cols="40" rows="8" name="dxNote00" id="textarea-dxNote"><?php echo $dxNote; ?></textarea>
     <input type="submit" class="ui-btn ui-shadow ui-btn-icon-right ui-corner-all ui-icon-edit" value="SAVE" data-theme="b">
-    <input type="hidden" name="edit" value="dx" />
+    <input type="hidden" name="edit" value="note" />
 </form>
 </div><!-- /content -->
 
