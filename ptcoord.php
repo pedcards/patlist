@@ -218,317 +218,35 @@ function dialogConfirm() {
 </div><!-- /header -->
 
 <div data-role="content">
-<!--    <div data-role="collapsible" data-mini="true"><h3>Error checks</h3>
-    <?php
-        echo '<pre><small>';
-        var_dump($editdate);
-        echo '</small></pre>';
-    ?>
-    </div>-->
 
 <form method="post" <?php echo 'action="ptcoord.php?id='.$mrn.'"'; ?>>
     <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" class="ui-field-contain">
-        <input name="statusCons" id="cbox-1a" type="checkbox" <?php if ($statusCons) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-1a">Cons</label>
-        <input name="statusRes" id="cbox-1b" type="checkbox" <?php if ($statusRes) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-1b">Res</label>
-        <input name="statusScamp" id="cbox-1c" type="checkbox" <?php if ($statusScamp) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-1c">SCAMP</label>
+        <input name="statusBag" id="cbox-1a" type="checkbox" <?php if ($statusBag) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-1a">Bag given</label>
+        <input name="statusPillow" id="cbox-1b" type="checkbox" <?php if ($statusPillow) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-1b">Pillow given</label>
+        <input name="statusTour" id="cbox-1c" type="checkbox" <?php if ($statusTour) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-1c">Tour given</label>
+        <!--<input data-icon="camera" data-iconpos="notext" data-corners="false" value="Icon only" type="submit" >-->
+    </fieldset>
+    <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" class="ui-field-contain">
+        <input name="statusMFM" id="cbox-2a" type="checkbox" <?php if ($statusMFM) { echo 'checked="checked"'; } ?> onChange="submit();">
+        <label for="cbox-2a">MFM notified</label>
         <!--<input data-icon="camera" data-iconpos="notext" data-corners="false" value="Icon only" type="submit" >-->
     </fieldset>
     <input type="hidden" name="edit" value="status" />
 </form>
-<form method="post" <?php echo 'action="ptcoord.php?id='.$mrn.'"'; ?>>
-    <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" class="ui-field-contain">
-        <input name="statusTxp" id="cbox-2a" type="checkbox" <?php if ($statusTxp) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-2a">Txp</label>
-        <input name="statusMil" id="cbox-2b" type="checkbox" <?php if ($statusMil) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-2b">Mil</label>
-        <input name="statusPM" id="cbox-2c" type="checkbox" <?php if ($statusPM) { echo 'checked="checked"'; } ?> onChange="submit();">
-        <label for="cbox-2c">PM</label>
-        <!--<input data-icon="camera" data-iconpos="notext" data-corners="false" value="Icon only" type="submit" >-->
-    </fieldset>
-    <input type="hidden" name="edit" value="provider" />
-</form>
-<?php
-    if ($statusPM) { ?>
-<div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-mini="true" data-collapsed-icon="carat-r" data-expanded-icon="carat-d">
-    <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
-        <h3>Temporary pacemaker <?php echo (is_object($PMtemp)) ? 'settings' : '(NONE)';?></h3>
-        <?php
-        if (is_object($PMtemp)) 
-        {
-            echo '<p>'.$pmt_ed.' ['.$pmt_au.'] '.$pmt_notes.'</p>'
-        ?>
-        <div class="ui-grid-a">
-            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">TIMING PARAMETERS</div>
-            <div class="ui-block-a">
-                <div class="ui-body"> 
-                <?php
-                    echo 'Mode: '.$pmt_mode.'<br>';
-                    echo 'LRL: '.$pmt_LRL.'<br>';
-                    echo 'URL: '.$pmt_URL.'<br>';
-                ?>
-                </div>
-            </div>
-            <div class="ui-block-b">
-                <div class="ui-body">
-                <?php
-                    echo 'AVI: '.$pmt_AVI.'<br>';
-                    echo 'PVARP: '.$pmt_PVARP.'<br>';
-                ?>
-                </div>
-            </div>
-        </div>
-        <div class="ui-grid-a">
-            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">LEAD PARAMETERS</div>
-            <div class="ui-block-a">
-                <div class="ui-header ">Threshold</div>
-                <div class="ui-body"> 
-                <?php
-                    echo 'Ap: '.$pmt_ApThr.'<br>';
-                    echo 'As: '.$pmt_AsThr.'<br>';
-                    echo 'Vp: '.$pmt_VpThr.'<br>';
-                    echo 'Vs: '.$pmt_VsThr.'<br>';
-                ?>
-                </div>
-            </div>
-            <div class="ui-block-b">
-                <div class="ui-header ">Programmed</div>
-                <div class="ui-body">
-                <?php
-                    echo 'Ap: '.$pmt_Ap.'<br>';
-                    echo 'As: '.$pmt_As.'<br>';
-                    echo 'Vp: '.$pmt_Vp.'<br>';
-                    echo 'Vs: '.$pmt_Vs.'<br>';
-                ?>
-                </div>
-                    
-            </div>
-        </div><!-- /grid-a -->
-        <?php 
-        }
-        ?>
-        <a href="#editPMT" class="ui-btn ui-mini ui-btn-icon-left ui-icon-edit">Add/Modify settings</a>
-    </div>
-    <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
-        <h3>Permanent pacemaker <?php echo (is_object($PM)) ? 'settings' : '(NONE)';?></h3>
-        <?php
-        if (is_object($PM)) 
-        {
-            echo '<p>'.$pm_ed.' ['.$pm_au.'] '.$pm_notes.'</p>'
-        ?>
-        <div class="ui-grid-a">
-            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">DEVICE AND LEADS</div>
-            <div class="ui-body"> 
-            <?php
-                echo 'Model: '.$pm_model.'<br>';
-                echo 'Atrial: '.$pm_Alead.'<br>';
-                echo 'Ventricular: '.$pm_Vlead.'<br>';
-            ?>
-            </div>
-            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">TIMING PARAMETERS</div>
-            <div class="ui-block-a">
-                <div class="ui-body"> 
-                <?php
-                    echo 'Mode: '.$pm_mode.'<br>';
-                    echo 'LRL: '.$pm_LRL.'<br>';
-                    echo 'URL: '.$pm_URL.'<br>';
-                ?>
-                </div>
-            </div>
-            <div class="ui-block-b">
-                <div class="ui-body">
-                <?php
-                    echo 'AVI: '.$pm_AVI.'<br>';
-                    echo 'PVARP: '.$pm_PVARP.'<br>';
-                ?>
-                </div>
-            </div>
-        </div>
-        <div class="ui-grid-a">
-            <div class="ui-header ui-bar ui-bar-a" style="text-align: center">LEAD PARAMETERS</div>
-            <div class="ui-block-a">
-                <div class="ui-header ">Threshold</div>
-                <div class="ui-body"> 
-                <?php
-                    echo 'Ap: '.$pm_ApThr.'<br>';
-                    echo 'As: '.$pm_AsThr.'<br>';
-                    echo 'Vp: '.$pm_VpThr.'<br>';
-                    echo 'Vs: '.$pm_VsThr.'<br>';
-                ?>
-                </div>
-            </div>
-            <div class="ui-block-b">
-                <div class="ui-header ">Programmed</div>
-                <div class="ui-body">
-                <?php
-                    echo 'Ap: '.$pm_Ap.'<br>';
-                    echo 'As: '.$pm_As.'<br>';
-                    echo 'Vp: '.$pm_Vp.'<br>';
-                    echo 'Vs: '.$pm_Vs.'<br>';
-                ?>
-                </div>
-                    
-            </div>
-        </div><!-- /grid-a -->
-        <?php 
-        }
-        ?>
-        <a href="#editPM" class="ui-btn ui-mini ui-btn-icon-left ui-icon-edit">Add/Modify settings</a>
-    </div>
-</div>
-    <?php } ?>
 
 <div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-mini="true" data-collapsed-icon="carat-r" data-expanded-icon="carat-d">
     <div data-role="collapsible" data-content-theme="a" <?php if (empty($openme)) {echo 'data-collapsed="false"';}?>>
-        <h3>Diagnoses</h3>
+        <h3>Notes</h3>
         <ul data-role="listview" data-inset="true" data-icon="false" class="ui-alt-icon">
-            <li data-role="list-divider">Quick Notes</li>
-            <li><a href="#editDx"><p style="white-space: pre-wrap"><?php echo $dxNotes; ?></p></a></li>
-            <li data-role="list-divider">Diagnoses & Problems</li>
-            <li><a href="#editDx"><p style="white-space: pre-wrap"><?php echo $dxCrd; ?></p></a></li>
-            <li data-role="list-divider">EP diagnoses/problems</li>
-            <li><a href="#editDx"><p style="white-space: pre-wrap"><?php echo $dxEP; ?></p></a></li>
-            <li data-role="list-divider">Surgeries/Caths/Interventions</li>
-            <li><a href="#editDx"><p style="white-space: pre-wrap"><?php echo $dxSurg; ?></p></a></li>
-            <li data-role="list-divider">Problem list:</li>
-            <li><a href="#editDx"><p style="white-space: pre-wrap"><?php echo $dxProb; ?></p></a></li>
+            <li data-role="list-divider">Misc Notes (seen by all)</li>
+            <li><a href="#editDx"><p style="white-space: pre-wrap"><?php echo $dxMisc; ?></p></a></li>
+            <li data-role="list-divider">Notes (only seen by Coordinator)</li>
+            <li><a href="#editDx"><p style="white-space: pre-wrap"><?php echo $dxNote; ?></p></a></li>
         </ul>
     </div>
-    <div data-role="collapsible" <?php if ($openme=="TD") {echo 'data-collapsed="false"';}?>>
-        <h3>Tasks/Progress/Summaries</h3>
-        <div data-role="collapsibleset" data-inset="false">
-        <div data-role="collapsible" data-theme="a" <?php if ($openme=="TD") {echo 'data-collapsed="false"';}?>>
-            <h3>Tasks<span class="ui-li-count"><?php if (count($planTasks->todo)) {echo 'Due '.count($planTasks->todo);}?></span></h3>
-            <ul data-role="listview" data-count-theme="a">
-                <?php
-                foreach ($planTasks->todo as $tmp) {
-                    $tmpIdx = $tmp->attributes()->created;
-                    $tmpAtt = $tmp->attributes()->due;
-                    $tmpDate = substr($tmpAtt,4,2).'/'.substr($tmpAtt,6,2);
-                    $tmpStr = (string)$tmp;
-                    $tmpDT1 = date_create('now');
-                    $tmpDT2 = date_create(substr($tmpAtt,0,4).'-'.substr($tmpAtt,4,2).'-'.substr($tmpAtt,6,2));
-                    $tmpDT0 = date_diff($tmpDT1,$tmpDT2)->format('%R%a');
-                    $tmpDTstr1 = "";
-                    $tmpDTstr2 = "";
-                    if ($tmpDT0<3) {
-                        $tmpDTstr1 = 'color:green';
-                        $tmpDTstr2 = 'background-color:gold; color:black';
-                    }
-                    if ($tmpDT0<1) {
-                        $tmpDTstr1 = 'color:red';
-                        $tmpDTstr2 = 'background-color:red; color:black';
-                    }
-                    echo '
-                    <li data-icon="check">
-                        <a href="ptcoord.php?id='.$mrn.'&idx='.$tmpIdx.'&ed=T#editTask" data-ajax="false">
-                            <p style="white-space: pre-wrap"><b><span style="'.$tmpDTstr1.'">'.$tmpStr.'</span></b></p><span class="ui-li-count" style="'.$tmpDTstr2.'">'.$tmpDate.'</span>
-                        </a>
-                        <a href="ptcoord.php?id='.$mrn.'&idx='.$tmpIdx.'&td=cl" >Check</a>
-                    </li>';
-                }
-                echo '<div data-role="collapsible" data-inset="true" >
-                    <h3>Done<span class="ui-li-count">'.count($planDone->todo).'</span></h3>
-                        <ul data-role="listview" >';
-                foreach ($planDone->todo as $tmp) {
-                    $tmpIdx = $tmp->attributes()->created;
-                    $tmpAtt = $tmp->attributes()->due;
-                    $tmpDate = substr($tmpAtt,4,2).'/'.substr($tmpAtt,6,2);
-                    $tmpStr = (string)$tmp;
-                    
-                    echo '
-                    <li data-icon="back">
-                        <a href="#" data-ajax="false">
-                            <p style="white-space: pre-wrap"><i>'.$tmpStr.'</i></p><span class="ui-li-count"><i>'.$tmpDate.'</i></span>
-                        </a>
-                        <a href="ptcoord.php?id='.$mrn.'&idx='.$tmpIdx.'&td=uc" >Uncheck</a>
-                    </li>';
-                }
-                echo '
-                    </ul>
-                    </div>';
-                ?>
-                <li data-icon="plus" data-theme="b"><a style="text-align:center;" href="ptcoord.php?id=<?php echo $mrn;?>&ed=T#editTask" data-ajax="false">Add task...</a></li>
-            </ul>
-        </div>
-        <div data-role="collapsible" data-theme="a">
-            <h3>Progress Notes<span class="ui-li-count">0</span></h3>
-            <ul data-role="listview" >
-                <?php
-                $tmpNote = 'This is a really long note that represents the progress note for this date. It shouldn`t have any impact on how things look. I will just keep typing here since I don`t know how much more space that I need to take up.';
-                echo '<li data-icon="false"><a href="#popup01" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-transition="pop"><p>'.$tmpNote.'</p><span class="ui-li-count">9/14</span></a></li>';
-                echo '<div data-role="popup" id="popup01" data-overlay-theme="b" data-theme="a" class="ui-content"><p>'.$tmpNote.'</p></div>';
-                ?>
-                <li data-icon="plus" data-theme="b"><a style="text-align:center;" href="#notdone" data-rel="popup" data-transition="pop">Add progress note...</a></li>
-            </ul>
-        </div>
-        <div data-role="collapsible" <?php if ($openme=='WK') {echo 'data-collapsed="false"';}?>>
-            <h3>Weekly Summaries<span class="ui-li-count"><?php echo count($notesWk->summary);?></span></h3>
-            <ul data-role="listview" data-count-theme="b">
-                <?php
-                foreach ($notesWk->summary as $tmp) {
-                    $tmpIdx = $tmp->attributes()->created;
-                    $tmpAtt = $tmp->attributes()->date;
-                    $tmpDate = substr($tmpAtt,4,2).'/'.substr($tmpAtt,6,2);
-                    $tmpStr = (string)$tmp;
-                    echo '
-                    <li data-icon="false">
-                        <a href="ptcoord.php?id='.$mrn.'&idx='.$tmpIdx.'&ed=S#editWkSumm" data-ajax="false">
-                            <p style="white-space: pre-wrap">'.$tmpStr.'</p><span class="ui-li-count">'.$tmpDate.'</span>
-                        </a>
-                    </li>';
-                }
-                ?>
-                <li data-icon="plus" data-theme="b"><a style="text-align:center;" href="ptcoord.php?id=<?php echo $mrn;?>&ed=S#editWkSumm" data-ajax="false">Add summary...</a></li>
-            </ul>
-        </div>
-        </div>
-    </div>
-    <div data-role="collapsible"> 
-        <h3>Patient history (CORES)</h3>
-            <p><small><?php echo $hx;?></small></p>
-    </div>
-    <div data-role="collapsible">
-        <h3>Meds/Diet (CORES)</h3>
-        <div data-role="collapsibleset" >
-            <div data-role="collapsible" data-collapsed="false">
-                <h3>Cardiac Meds</h3>
-                <div id="med-Card" class="ui-content" >
-                    <ul data-role="listview" data-inset="false" data-mini="true">
-                        <li data-role="list-divider" data-theme="a" >Drips</li>
-                        <?php medlist('drips',$MAR,'Cardiac'); medlist('drips',$MAR,'Arrhythmia'); ?>
-                        <li data-role="list-divider" data-theme="a" >Scheduled</li>
-                        <?php medlist('meds',$MAR,'Cardiac'); medlist('meds',$MAR,'Arrhythmia'); ?>
-                        <li data-role="list-divider" data-theme="a" >PRN</li>
-                        <?php medlist('prn',$MAR,'Cardiac'); medlist('prn',$MAR,'Arrhythmia'); ?>
-                    </ul> 
-                </div>
-            </div>
-            <div data-role="collapsible">
-                <h3>Other Meds</h3>
-                <div id="med-Other" class="ui-content" >
-                    <ul data-role="listview" data-inset="false" data-mini="true">
-                        <li data-role="list-divider" data-theme="a" >Drips</li>
-                        <?php medlist('drips',$MAR,'Other'); ?>
-                        <li data-role="list-divider" data-theme="a" >Scheduled</li>
-                        <?php medlist('meds',$MAR,'Other'); ?>
-                        <li data-role="list-divider" data-theme="a" >PRN</li>
-                        <?php medlist('prn',$MAR,'Other'); ?>
-                    </ul>
-                </div>
-            </div>
-            <div data-role="collapsible">
-                <h3>Diet</h3>
-                <div id="med-Diet" class="ui-content" >
-                    <ul>
-                        <?php medlist('diet',$MAR); ?>
-                    </ul>
-                </div>
-            </div>
-        </div><!-- /MEDS accordion -->
-    </div><!-- /MAR -->
 </div><!-- /collapsible set -->
 </div><!-- /content -->
 
