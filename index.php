@@ -91,7 +91,10 @@ if ($list) {
             echo '<li data-role="list-divider" data-theme="b" >'.$service.'</li>';
             }
         echo '<li>';
-        echo    '<a href="ptmain.php?id='.$mrn.'" data-ajax="false"><i>'.$nameL.'</i>, <small>'.$nameF.'</small><span class="ui-li-count">'.$statusString.'<small>'.$room.'</small></span></a>';
+        echo    '<a href="'.($list=='Coord'?'ptcoord.php':'ptmain.php').'?id='.$mrn.'" data-ajax="false">'
+                    .'<i>'.$nameL.'</i>, <small>'.$nameF.'</small>'
+                    .'<span class="ui-li-count">'.$statusString.'<small>'.$room.'</small></span>'
+                .'</a>';
         echo '</li>';
         $lastservice = $service;
     }
