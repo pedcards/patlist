@@ -74,57 +74,6 @@ $id = $xml->xpath("id[@mrn='".$mrn."']");
         $statusMil = (string)$prov['mil'];
         $statusPM = (string)$prov['pm'];
 
-    if (!($notes = $id[0]->notes)) {                                            // create <notes> node if missing
-        $notes = $id[0]->addChild('notes');
-        $xml->asXML("currlist.xml");
-    }
-    $notesWk = $notes[0]->weekly;
-    $notesPn = $notes[0]->progress;
-    
-    if (!($plan = $id[0]->plan)) {                                              // create <plan> node if missing
-        $plan = $id[0]->addChild('plan');
-        $xml->asXML("currlist.xml");
-    }
-    $planTasks = $plan[0]->tasks;
-    $planDone = $plan[0]->done;
-    
-    //
-    $todoCk = \filter_input(\INPUT_GET, 'td');                                  // todo has been checked or unchecked
-    if (!empty($todoCk)) {
-        if ($todoCk=="cl") {                                                    // CHECKED
-            if (empty($planDone)) {
-                $plan[0]->addChild('done');
-            }
-            $todoTmp = $planTasks->xpath("todo[@created='".$index."']");
-            $planDone = $plan[0]->done;
-            $todoTmp[0]['done'] = $timenow;
-            cloneBlob($todoTmp[0], 'todo','done');
-            
-            $dom_tasks = dom_import_simplexml($planTasks[0]);
-            $dom_todo = dom_import_simplexml($todoTmp[0]);
-            $dom_done= dom_import_simplexml($planDone[0]);
-            $dom_new = $dom_done->appendChild($dom_todo->cloneNode(true));
-            $new_node = simplexml_import_dom($dom_new);
-            unset($todoTmp[0][0]);
-        }
-        if ($todoCk=="uc") {                                                    // UNCHECK from TRASH
-            $todoTmp = $planDone->xpath("todo[@created='".$index."']");
-            $planTasks = $plan[0]->tasks;
-            $todoTmp[0]['done'] = "";
-            cloneBlob($todoTmp[0],'todo','undo');
-            
-            $dom_done = dom_import_simplexml($planDone[0]);
-            $dom_todo = dom_import_simplexml($todoTmp[0]);
-            $dom_tasks = dom_import_simplexml($planTasks[0]);
-            $dom_new = $dom_tasks->appendChild($dom_todo->cloneNode(true));
-            $new_node = simplexml_import_dom($dom_new);
-            unset($todoTmp[0][0]);
-        }
-        $xml->asXML("currlist.xml");
-        $openme = "TD";
-    }
-    $trash = $id[0]->trash;
-    
 $edit = \filter_input(\INPUT_POST, 'edit');
     if ($edit == "dx") {
         $dxNotes =  \filter_input(\INPUT_POST, 'dxNotes00', FILTER_SANITIZE_SPECIAL_CHARS);
